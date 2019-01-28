@@ -1,29 +1,130 @@
 import 'package:flutter/material.dart';
+import 'package:english_words/english_words.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+		title: 'Startup Name Generator',            
+		home: new MyGetHttpData(),
     );
   }
 }
+// Create a stateful widget
+class MyGetHttpData extends StatefulWidget {
+  @override
+  MyGetHttpDataState createState() => new MyGetHttpDataState();
+}
+// Create the state for our stateful widget
+
+class MyGetHttpDataState extends State<MyGetHttpData> {
+  final String url = "http://rorrc.3322.org:5556/notes";
+  List data;
+  
+  Future<String> getJSONData() async {
+    var response = await http.get(
+        Uri.encodeFull(url),
+        headers: {"Accept": "application/json"}
+	);
+    print(response.body);
+    setState(() {
+		var dataConvertedToJSON = json.decode(response.body);
+		data = dataConvertedToJSON['data'];
+    });
+    return "Successfull";
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Data Demo"),
+      ),
+      // Create a Listview and load the data when available
+      body: new ListView.builder(
+          itemCount: data == null ? 0 : data.length,
+          itemBuilder: (BuildContext context, int index) {
+            return new Container(
+              child: new Center(
+                  child: new Column(
+                // Stretch the cards in horizontal axis
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  new Card(
+                    child: new Container(
+                      child: new Text(
+                        // Read the name field value and set it in the Text widget
+                        data[index]['content'],
+                        // set some style to text
+                        style: new TextStyle(
+                            fontSize: 20.0, color: Colors.lightBlueAccent),
+                      ),
+                      // added padding
+                      padding: const EdgeInsets.all(15.0),
+                    ),
+                  )
+                ],
+              )),
+            );
+          }),
+    );
+  }
+   @override
+  void initState() {
+    super.initState();
+
+    // Call the getJSONData() method when the app initializes
+    this.getJSONData();
+  }
+}
+
+class RandomWordsState extends State<RandomWords> {
+	final _suggestions = <WordPair>[];
+  	final _biggerFont = const TextStyle(fontSize: 18.0);
+	Widget _buildSuggestions() {
+		return ListView.builder(
+			padding: const EdgeInsets.all(16.0),
+			itemBuilder: /*1*/ (context, i) {
+				if (i.isOdd) return Divider(); /*2*/
+
+				final index = i ~/ 2; /*3*/
+				if (index >= _suggestions.length) {
+				_suggestions.addAll(generateWordPairs().take(10)); /*4*/
+				}
+				return _buildRow(_suggestions[index]);
+			}
+		);
+	}
+	Widget _buildRow(WordPair pair) {
+		return ListTile(
+			title: Text(
+			pair.asPascalCase,
+			style: _biggerFont,
+			),
+		);
+	}
+	@override
+	Widget build(BuildContext context) {
+		return Scaffold(
+			appBar: AppBar(
+			title: Text('Startup Name Generator'),
+			),
+			body: _buildSuggestions(),
+		);
+	}
+}
+
+class RandomWords extends StatefulWidget {
+	@override
+	RandomWordsState createState() => new RandomWordsState();
+}
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
