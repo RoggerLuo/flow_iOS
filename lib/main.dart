@@ -24,7 +24,7 @@ class MyGetHttpData extends StatefulWidget {
 // Create the state for our stateful widget
 
 class MyGetHttpDataState extends State<MyGetHttpData> {
-  final String url = "http://rorrc.3322.org:5556/notes";
+  final String url = "http://rorrc.3322.org:6664/notes";
   List data;
   
   Future<String> getJSONData() async {
