@@ -31,16 +31,11 @@ class MyHomePage extends StatelessWidget {
       ),
       body: FormKeyboardActions(
         keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
-        keyboardBarColor: Colors.transparent, //Colors.grey[200],//
-        nextFocus: false,
+        keyboardBarColor: Colors.grey[200],
+        nextFocus: true,
         actions: [
           KeyboardAction(
             focusNode: _nodeText1,
-            closeWidget: Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 2, 10.0, 10.0),//all(8.0)
-              child: Icon(Icons.details),
-            ),
-
           ),
           KeyboardAction(
             focusNode: _nodeText2,
@@ -86,8 +81,7 @@ class MyHomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 16,
+                  keyboardType: TextInputType.number,
                   focusNode: _nodeText1,
                   decoration: InputDecoration(
                     hintText: "Input Number",
