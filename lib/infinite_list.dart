@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Infinite List',
-      theme: new ThemeData(
-          primaryColor: Colors.blue, accentColor: Colors.lightBlue),
-      home: new RandomWords(),
-    );
-  }
-}
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return new MaterialApp(
+//       title: 'Infinite List',
+//       theme: new ThemeData(
+//           primaryColor: Colors.blue, accentColor: Colors.lightBlue),
+//       home: new RandomWords(),
+//     );
+//   }
+// }
 
 class RandomWords extends StatefulWidget {
   @override
@@ -22,22 +22,33 @@ class RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final _saved = new Set<WordPair>();
   final _biggerFont = const TextStyle(fontSize: 18.0);
+    
+  @override
+    void initState() {
+      print('stat state state start');
+      super.initState();
+      //setState()
+      _suggestions.addAll(generateWordPairs().take(10));
 
+    // Call the getJSONData() method when the app initializes
+    //this.getJSONData();
+  }
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Infinite List'),
-        centerTitle: true,
-        actions: <Widget>[
-          new IconButton(icon: new Icon(Icons.list), onPressed: _pushSaved),
-        ],
-      ),
-      body: _buildSuggestions(),
-    );
+    return _buildSuggestions();
+    // new Scaffold(
+    //   appBar: new AppBar(
+    //     title: new Text('Infinite List'),
+    //     centerTitle: true,
+    //     actions: <Widget>[
+    //       new IconButton(icon: new Icon(Icons.list), onPressed: _pushSaved),
+    //     ],
+    //   ),
+    //   body: _buildSuggestions(),
+    // );
   }
 
-  void _pushSaved() {
+  void _tapNote() {
     Navigator.of(context).push(
       new MaterialPageRoute(
         builder: (context) {
@@ -81,6 +92,7 @@ class RandomWordsState extends State<RandomWords> {
         color: alreadySaved ? Colors.red : null,
       ),
       onTap: () {
+        _tapNote();
         setState(() {
           if (alreadySaved) {
             _saved.remove(pair);
@@ -95,27 +107,47 @@ class RandomWordsState extends State<RandomWords> {
   Widget _buildSuggestions() {
     return new ListView.builder(
         padding: const EdgeInsets.all(0),
-        // The itemBuilder callback is called once per suggested word pairing,
-        // and places each suggestion into a ListTile row.
-        // For even rows, the function adds a ListTile row for the word pairing.
-        // For odd rows, the function adds a Divider widget to visually
-        // separate the entries. Note that the divider may be difficult
-        // to see on smaller devices.
+        itemCount: _suggestions.length,
         itemBuilder: (context, i) {
-          // Add a one-pixel-high divider widget before each row in theListView.
-          // if (i.isOdd) return new Divider();
+          //final item = items[index];
 
-          // The syntax "i ~/ 2" divides i by 2 and returns an integer result.
-          // For example: 1, 2, 3, 4, 5 becomes 0, 1, 1, 2, 2.
-          // This calculates the actual number of word pairings in the ListView,
-          // minus the divider widgets.
           final index = i ; //~/ 2;
-          // If you've reached the end of the available word pairings...
           if (index >= _suggestions.length) {
-            // ...then generate 10 more and add them to the suggestions list.
             _suggestions.addAll(generateWordPairs().take(10));
+
           }
+
+          final item = _suggestions[index];
+
+          // if (index >= _suggestions.length) {
+          //   _suggestions.addAll(generateWordPairs().take(10));
+          // }
+
+            return Dismissible(
+              // Each Dismissible must contain a Key. Keys allow Flutter to
+              // uniquely identify Widgets.
+              key: Key(item.asPascalCase+index.toString()),
+              // We also need to provide a function that tells our app
+              // what to do after an item has been swiped away.
+              onDismissed: (direction) {
+                // Remove the item from our data source.
+                setState(() {
+                  _suggestions.removeAt(index);
+                });
+
+                // Then show a snackbar!
+                Scaffold.of(context)
+                    .showSnackBar(SnackBar(content: Text("$item dismissed")));
+              },
+              // Show a red background as the item is swiped away
+              background: Container(color: Colors.red),
+              child: ListTile(title: Text('$item')),
+            );
+
+
           return _buildRow(_suggestions[index]);
         });
   }
+
+
 }

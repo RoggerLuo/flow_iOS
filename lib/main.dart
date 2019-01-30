@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-
+import 'package:english_words/english_words.dart';
+import 'infinite_list.dart' as infinite_list;
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -9,123 +10,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
       ),
-      home: MyHomePage(),
+      home: IndexPage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  FocusNode _nodeText1 = FocusNode();
-  FocusNode _nodeText2 = FocusNode();
-  FocusNode _nodeText3 = FocusNode();
-  FocusNode _nodeText4 = FocusNode();
-  FocusNode _nodeText5 = FocusNode();
+class IndexPage extends StatelessWidget {
+    void _pressLeftButton() {
+
+    }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Keyboard Actions Sample"),
-      ),
-      body: FormKeyboardActions(
-        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
-        keyboardBarColor: Colors.transparent, //Colors.grey[200],//
-        nextFocus: false,
-        actions: [
-          KeyboardAction(
-            focusNode: _nodeText1,
-            closeWidget: Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 2, 10.0, 10.0),//all(8.0)
-              child: Icon(Icons.details),
-            ),
+        title: Text("Reflection"),
 
-          ),
-          KeyboardAction(
-            focusNode: _nodeText2,
-            closeWidget: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.close),
-            ),
-          ),
-          KeyboardAction(
-            focusNode: _nodeText3,
-            onTapAction: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      content: Text("Custom Action"),
-                      actions: <Widget>[
-                        FlatButton(
-                          child: Text("OK"),
-                          onPressed: () => Navigator.of(context).pop(),
-                        )
-                      ],
-                    );
-                  });
-            },
-          ),
-          KeyboardAction(
-            focusNode: _nodeText4,
-            displayCloseWidget: false,
-          ),
-          KeyboardAction(
-            focusNode: _nodeText5,
-            closeWidget: Padding(
-              padding: EdgeInsets.all(5.0),
-              child: Text("CLOSE"),
-            ),
-          ),
-        ],
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 16,
-                  focusNode: _nodeText1,
-                  decoration: InputDecoration(
-                    hintText: "Input Number",
-                  ),
-                ),
-                TextField(
-                  keyboardType: TextInputType.text,
-                  focusNode: _nodeText2,
-                  decoration: InputDecoration(
-                    hintText: "Input Text with Custom Close Widget",
-                  ),
-                ),
-                TextField(
-                  keyboardType: TextInputType.number,
-                  focusNode: _nodeText3,
-                  decoration: InputDecoration(
-                    hintText: "Input Number with Custom Action",
-                  ),
-                ),
-                TextField(
-                  keyboardType: TextInputType.text,
-                  focusNode: _nodeText4,
-                  decoration: InputDecoration(
-                    hintText: "Input Text without Close Widget",
-                  ),
-                ),
-                TextField(
-                  keyboardType: TextInputType.number,
-                  focusNode: _nodeText5,
-                  decoration: InputDecoration(
-                    hintText: "Input Number with Custom Close Widget",
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        leading : new IconButton(icon: new Icon(Icons.list), onPressed: _pressLeftButton),
+
       ),
+      body: new infinite_list.RandomWords()//Text('test')//
     );
   }
 }
