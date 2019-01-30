@@ -1,31 +1,40 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-
+import 'package:zefyr/zefyr.dart';
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Infinite List',
-      theme: new ThemeData(
-          primaryColor: Colors.blue, accentColor: Colors.lightBlue),
-      home: new RandomWords(),
+    return MaterialApp(
+      title: 'Startup Name Generator',            
+      home: new Scaffold(
+        appBar: new AppBar(
+          title:new Text('test'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView(children: <Widget>[
+            TextField(decoration: InputDecoration(labelText: 'abccc')),
+            TextField(keyboardAppearance:Brightness.dark,maxLines:null,keyboardType:TextInputType.multiline,),
+          ],),
+        ),
+      ),
     );
+    
   }
 }
 
-class RandomWords extends StatefulWidget {
+class MyWidget extends StatefulWidget {
   @override
-  createState() => new RandomWordsState();
+  MyWidgetState createState() => MyWidgetState();
 }
 
-class RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final _saved = new Set<WordPair>();
-  final _biggerFont = const TextStyle(fontSize: 18.0);
+class MyWidgetState extends State<MyWidget> {
+   ZefyrController _controller;
+   FocusNode _focusNode;
 
   @override
+<<<<<<< HEAD
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
@@ -88,18 +97,27 @@ class RandomWordsState extends State<RandomWords> {
       trailing: new Icon(
         alreadySaved ? Icons.favorite : Icons.favorite_border,
         color: alreadySaved ? Colors.red : null,
+=======
+  void initState() {
+    super.initState();
+    // Create an empty document or load existing if you have one.
+    // Here we create an empty document:
+    final document = new NotusDocument();
+    _controller = new ZefyrController(document);
+    _focusNode = new FocusNode();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ZefyrScaffold(
+      child: ZefyrEditor(
+        controller: _controller,
+        focusNode: _focusNode,
+>>>>>>> baf0bef224b9118e8702e4b2246d6b9fe54e8fb8
       ),
-      onTap: () {
-        setState(() {
-          if (alreadySaved) {
-            _saved.remove(pair);
-          } else {
-            _saved.add(pair);
-          }
-        });
-      },
     );
   }
+<<<<<<< HEAD
 
   Widget _buildSuggestions() {
     return new ListView.builder(
@@ -155,4 +173,6 @@ class AddEntryDialogState extends State<AddEntryDialog> {
       body: new Text("Foo"),
     );
   }
+=======
+>>>>>>> baf0bef224b9118e8702e4b2246d6b9fe54e8fb8
 }
