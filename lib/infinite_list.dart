@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
-
+import 'dart:async';
 // class MyApp extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {
@@ -23,16 +23,61 @@ class RandomWordsState extends State<RandomWords> {
   final _saved = new Set<WordPair>();
   final _biggerFont = const TextStyle(fontSize: 18.0);
     
-  @override
-    void initState() {
-      print('stat state state start');
-      super.initState();
-      //setState()
-      _suggestions.addAll(generateWordPairs().take(10));
 
-    // Call the getJSONData() method when the app initializes
-    //this.getJSONData();
+  ScrollController _scrollController = new ScrollController();
+  bool isPerformingRequest = false;
+
+  _getMoreData() async {
+    if (!isPerformingRequest) {
+      setState(() => isPerformingRequest = true);
+      List<int> newEntries = await fakeRequest(_suggestions.length, _suggestions.length + 10);
+      List<int> testList = [];
+      if (testList.isEmpty) {
+        double edge = 50.0;
+        double offsetFromBottom = _scrollController.position.maxScrollExtent - _scrollController.position.pixels;
+        if (offsetFromBottom < edge) {
+          _scrollController.animateTo(
+              _scrollController.offset - (edge -offsetFromBottom),
+              duration: new Duration(milliseconds: 500),
+              curve: Curves.easeOut);
+        }
+      }
+
+
+      setState(() {
+        //_suggestions.addAll(generateWordPairs().take(10));
+        isPerformingRequest = false;
+      });
+    }
   }
+  @override
+  void initState() {
+    super.initState();
+    _suggestions.addAll(generateWordPairs().take(10));
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+        _getMoreData();
+      }
+    });
+
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  // @override
+  //   void initState() {
+  //     print('stat state state start');
+  //     super.initState();
+  //     //setState()
+  //     _suggestions.addAll(generateWordPairs().take(10));
+
+  //   // Call the getJSONData() method when the app initializes
+  //   //this.getJSONData();
+  // }
   @override
   Widget build(BuildContext context) {
     return _buildSuggestions();
@@ -107,21 +152,28 @@ class RandomWordsState extends State<RandomWords> {
   Widget _buildSuggestions() {
     return new ListView.builder(
         padding: const EdgeInsets.all(0),
-        itemCount: _suggestions.length,
+        controller: _scrollController,
+        itemCount: _suggestions.length + 1,
         itemBuilder: (context, i) {
           //final item = items[index];
 
           final index = i ; //~/ 2;
-          if (index >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10));
+          // if (index >= _suggestions.length) {
+          //   _suggestions.addAll(generateWordPairs().take(10));
 
-          }
+          // }
 
-          final item = _suggestions[index];
 
           // if (index >= _suggestions.length) {
           //   _suggestions.addAll(generateWordPairs().take(10));
           // }
+          if (index == _suggestions.length) {
+            
+            return _buildProgressIndicator();
+
+          } else {
+            // return ListTile(title: new Text("Number $index"));
+            final item = _suggestions[index];
 
             return Dismissible(
               // Each Dismissible must contain a Key. Keys allow Flutter to
@@ -143,11 +195,31 @@ class RandomWordsState extends State<RandomWords> {
               background: Container(color: Colors.red),
               child: ListTile(title: Text('$item')),
             );
+          
+          
+          }
 
 
           return _buildRow(_suggestions[index]);
         });
   }
+  Widget _buildProgressIndicator() {
+    return new Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new Center(
+        child: new Opacity(
+          opacity: isPerformingRequest ? 1.0 : 0.0,
+          child: new CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
+
+}
 
 
+Future<List<int>> fakeRequest(int from, int to) async {
+  return Future.delayed(Duration(seconds: 2), () {
+    return List.generate(to - from, (i) => i + from);
+  });
 }
