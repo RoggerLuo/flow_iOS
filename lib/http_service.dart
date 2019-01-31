@@ -31,10 +31,10 @@ class MyGetHttpDataState extends State<MyGetHttpData> {
         Uri.encodeFull(url),
         headers: {"Accept": "application/json"}
 	);
-    print(response.body);
+    // print(response.body);
     setState(() {
-		var dataConvertedToJSON = json.decode(response.body);
-		data = dataConvertedToJSON['data'];
+		  var dataConvertedToJSON = json.decode(response.body);
+		  data = dataConvertedToJSON['data'];
     });
     return "Successfull";
   }
