@@ -149,7 +149,8 @@ class RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildSuggestions() {
-    return new ListView.builder(
+    
+    return ListView.separated(
         padding: const EdgeInsets.all(0),
         controller: _scrollController,
         itemCount: _notes.length + 1,
