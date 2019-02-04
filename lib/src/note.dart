@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'noteModal.dart';
 final _noteFont = const TextStyle(fontSize: 16.0);
 class Note {
   String content;
@@ -16,11 +17,19 @@ class Note {
     );
   }
 }
-Widget buildNoteRow(Note note) {
+Widget buildNoteRow(Note note,BuildContext context) {
   return ListTile(
     title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
     subtitle: Text(convertTime(note)),
-    onTap: () {},
+    onTap: () {
+      openAddEntryDialog(context,note:note);
+      // Navigator.of(context).push(new MaterialPageRoute(
+      //   builder: (BuildContext context) {
+      //     return new AddEntryDialog();
+      //   },
+      //   fullscreenDialog: true
+      // ));
+    },
   );
 }
 String convertTime(Note note){

@@ -12,8 +12,7 @@ class MyApp extends StatelessWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: TextField(maxLines:10,keyboardType:TextInputType.multiline,),
-          
+          child: TextField(maxLines:10,keyboardType:TextInputType.multiline),     
         ),
       ),
     ); 

@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
       model: IndexModel(),
       child: MaterialApp(
         title: 'Reflection',
-        theme: new ThemeData(primaryColor: Colors.blue, accentColor: Colors.lightBlue),
+        theme: new ThemeData(primaryColor: Colors.blueGrey, accentColor: Colors.lightBlue),
         home: IndexPage()
       )
     );

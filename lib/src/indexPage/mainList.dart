@@ -24,7 +24,7 @@ var buildMainList = () => ScopedModelDescendant<IndexModel>(
         if (index == model.notes.length) {
           return buildProgressIndicator(model.isPerformingRequest);
         } else {
-          return buildNoteRow(model.notes[index]);
+          return buildNoteRow(model.notes[index],context);
         }
       }
     )
