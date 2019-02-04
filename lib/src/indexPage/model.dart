@@ -1,7 +1,7 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:english_words/english_words.dart';
 
-class MainModel extends Model {
+class IndexModel extends Model {
   var _counter = 0;
   List _suggestions = <WordPair>[]; //WordPair.random(),WordPair.random()
   Set _saved = new Set<WordPair>();

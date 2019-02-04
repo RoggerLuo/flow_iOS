@@ -1,32 +1,24 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'src/indexPage/model.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'model.dart';
-final _biggerFont = const TextStyle(fontSize: 18.0);
-var buildMainList = () => ScopedModelDescendant<MainModel>(
-  builder: (context, child, model) => ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return new Divider();
-          final index = i ~/ 2;
-          if (index >= model.suggestions.length) {
-            model.increment();
-          }
-          return _buildRow(model.suggestions[index]);
-        }
+import 'src/indexPage/mainList.dart';
+
+void main() => runApp(new MyApp());
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      title: 'Infinite List demo',
+      theme: new ThemeData(
+          primaryColor: Colors.blue, accentColor: Colors.lightBlue),
+      home: ScopedModel<IndexModel>(
+        model: IndexModel(),
+        child: new RandomWords(),
       )
-  );
-// );
-Widget _buildRow(WordPair pair) {
-    return ListTile(
-      title: new Text(
-        pair.asPascalCase,
-        style: _biggerFont,
-      ),
-      onTap: () {
-      },
     );
   }
+}
 
 class RandomWords extends StatefulWidget {
   @override
@@ -37,18 +29,28 @@ class RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final _saved = new Set<WordPair>();
   final _biggerFont = const TextStyle(fontSize: 18.0);
-
+  ScrollController _scrollController = new ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+        ScopedModel.of<IndexModel>(context, rebuildOnChange: true).increment();
+      }
+    });
+  }
+// _scrollController.animateTo(i * _ITEM_HEIGHT, duration: new Duration(seconds: 2), curve: Curves.ease);
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('Infinite List'),
+        title: new Text('Reflection'),
         centerTitle: true,
         actions: <Widget>[
           new IconButton(icon: new Icon(Icons.list), onPressed: _pushSaved),
         ],
       ),
-      body: _buildSuggestions(),
+      body: _buildSuggestions(_scrollController),
     );
   }
 
@@ -107,16 +109,29 @@ class RandomWordsState extends State<RandomWords> {
     );
   }
 
-  Widget _buildSuggestions() {
-    return new ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return new Divider();
-          final index = i ~/ 2;
-          if (index >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10));
+  Widget _buildSuggestions(ScrollController _scrollController) {
+    return ScopedModelDescendant<IndexModel>(
+      builder: (context, child, model) => NotificationListener(
+        onNotification:(noti){ 
+          if(noti is ScrollUpdateNotification){
+            if (noti.metrics.pixels == noti.metrics.maxScrollExtent) {
+              print('end');
+              ScopedModel.of<IndexModel>(context, rebuildOnChange: true).increment();
+            }
           }
-          return _buildRow(_suggestions[index]);
-        });
+          return false;
+        },
+        child:ListView.separated(
+          padding: const EdgeInsets.all(16.0),
+          // controller: _scrollController,
+          separatorBuilder: (BuildContext context, int index) => Divider(),
+          itemCount: model.suggestions.length,// + 1,
+          itemBuilder: (context, i) {
+            final index = i ;//~/ 2;
+            return _buildRow(model.suggestions[index]);
+          }
+        )
+      )
+    );
   }
 }

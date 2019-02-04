@@ -77,7 +77,6 @@ class RandomWordsState extends State<RandomWords> {
         _getMoreData(1);
       }
     });
-
     _getMoreData(1);
   }
 
@@ -150,25 +149,18 @@ class RandomWordsState extends State<RandomWords> {
 
   Widget _buildSuggestions() {
     
-    return ListView.separated(
+    return ListView.builder(
         padding: const EdgeInsets.all(0),
         controller: _scrollController,
         itemCount: _notes.length + 1,
         itemBuilder: (context, i) {
           final index = i ; //~/ 2;
           if (index == _notes.length) {
-            
             return _buildProgressIndicator();
-
           } else {
             // return ListTile(title: new Text("Number $index"));
             final note = _notes[index];
             final content = note.content.trim(); // 显示第二行
-            // final modifyTime = DateTime.fromMillisecondsSinceEpoch(note.modifyTime * 1000);
-            // var formatter = DateFormat('yyyy-MM-dd');
-            // String formattedTime = formatter.format(modifyTime);
-
-            
             var now = new DateTime.now();
             var format = new DateFormat('HH:mm a');
             var date = new DateTime.fromMillisecondsSinceEpoch(note.modifyTime * 1000);
