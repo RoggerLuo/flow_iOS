@@ -35,7 +35,7 @@ class RandomWordsState extends State<RandomWords> {
     super.initState();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-        ScopedModel.of<IndexModel>(context, rebuildOnChange: true).increment();
+        // ScopedModel.of<IndexModel>(context, rebuildOnChange: true).increment();
       }
     });
   }
@@ -116,7 +116,7 @@ class RandomWordsState extends State<RandomWords> {
           if(noti is ScrollUpdateNotification){
             if (noti.metrics.pixels == noti.metrics.maxScrollExtent) {
               print('end');
-              ScopedModel.of<IndexModel>(context, rebuildOnChange: true).increment();
+              // ScopedModel.of<IndexModel>(context, rebuildOnChange: true).increment();
             }
           }
           return false;
@@ -125,10 +125,10 @@ class RandomWordsState extends State<RandomWords> {
           padding: const EdgeInsets.all(16.0),
           // controller: _scrollController,
           separatorBuilder: (BuildContext context, int index) => Divider(),
-          itemCount: model.suggestions.length,// + 1,
+          itemCount: model.notes.length,// + 1,
           itemBuilder: (context, i) {
             final index = i ;//~/ 2;
-            return _buildRow(model.suggestions[index]);
+            return _buildRow(model.notes[index]);
           }
         )
       )

@@ -1,22 +1,22 @@
 import 'package:scoped_model/scoped_model.dart';
-import 'package:english_words/english_words.dart';
-
+import '../note.dart';
+import '../http_service.dart';
 class IndexModel extends Model {
-  var _counter = 0;
-  List _suggestions = <WordPair>[]; //WordPair.random(),WordPair.random()
-  Set _saved = new Set<WordPair>();
-  bool isPerformingRequest = false;
-
-  int get counter => _counter;
-  List get suggestions => _suggestions;
-
-  void increment() {
-    // First, increment the counter
-    _counter++;
-    // isPerformingRequest = true;
-    _suggestions.addAll(generateWordPairs().take(10));
-    print('increment.....');
-    // Then notify all the listeners.
+  List _notes = [];
+  List get notes => _notes;
+  bool _isPerformingRequest = false;
+  bool get isPerformingRequest => _isPerformingRequest;
+  void onScrollBottom() {    
+    _getMoreData(1);
+    print('onScrollBottom...');
     notifyListeners();
+  }
+  void _getMoreData(int startIdx) async {
+    if (!_isPerformingRequest) {
+      _isPerformingRequest = true;
+      List<Note> notes = await getNotes(startIdx,10);//(_notes.length, _notes.length + 10);
+      _notes.addAll(notes);
+      _isPerformingRequest = false;
+    }
   }
 }

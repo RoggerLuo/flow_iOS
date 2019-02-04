@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'note.dart';
+import 'src/note.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-
 final String url = "http://rorrc.3322.org:6664/notes";
-
 class RandomWords extends StatefulWidget {
   @override
   createState() => new RandomWordsState();
 }
-
 class RandomWordsState extends State<RandomWords> {
   final _notes = <Note>[];
   // final _saved = new Set<WordPair>();
   final _biggerFont = const TextStyle(fontSize: 18.0);
   ScrollController _scrollController = new ScrollController();
   bool isPerformingRequest = false;
-  
-  
   Future<List> getNotes(int pageNum,int pageSize) async {
     var response = await http.get(
         Uri.encodeFull(url+'?pageNum='+pageNum.toString()+'&pageSize='+pageSize.toString()),
@@ -29,14 +24,7 @@ class RandomWordsState extends State<RandomWords> {
     List data = _jsonData['data'];
     List<Note> notes = data.map((note)=> Note.fromJson(note)).toList(); 
     return notes;
-    // print(response.body);
-    // setState(() {
-    //   var dataConvertedToJSON = json.decode(response.body);
-    //   _notes.addAll(dataConvertedToJSON['data']);
-    // });
-    // return "Successfull";
   }
-
   _getMoreData(int a) async {
     if (!isPerformingRequest) {
       setState(() => isPerformingRequest = true);
@@ -55,8 +43,6 @@ class RandomWordsState extends State<RandomWords> {
               curve: Curves.easeOut);
         }
       }
-
-
       setState(() {
         //_notes.addAll(generateWordPairs().take(10));
         isPerformingRequest = false;
@@ -200,11 +186,7 @@ class RandomWordsState extends State<RandomWords> {
                 subtitle: Text(time)
               ),
             );
-          
-          
           }
-
-
           //return _buildRow(_notes[index]);
         });
   }
