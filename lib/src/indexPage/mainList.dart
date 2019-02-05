@@ -14,20 +14,21 @@ var buildMainList = () => ScopedModelDescendant<IndexModel>(
       return false;
     },
     child: ListView.separated(
-      separatorBuilder: (BuildContext context, int index) => Divider(height: 0.0),
-      padding: const EdgeInsets.all(0),
-      itemCount: model.notes.length + 1,
-      itemBuilder: (context, index) {
-        if(model.notes.length == 0){
-          model.onScrollBottom();
+        separatorBuilder: (BuildContext context, int index) => Divider(height: 0.0),
+        padding: const EdgeInsets.all(0),
+        itemCount: model.notes.length + 1,
+        itemBuilder: (context, index) {
+          if(model.notes.length == 0){
+            model.onScrollBottom();
+          }
+          if (index == model.notes.length) {
+            return buildProgressIndicator(model.isPerformingRequest);
+          } else {
+            return buildNoteRow(model.notes[index],context);
+          }
         }
-        if (index == model.notes.length) {
-          return buildProgressIndicator(model.isPerformingRequest);
-        } else {
-          return buildNoteRow(model.notes[index],context);
-        }
-      }
-    )
+      )
+    
   )
 );
     

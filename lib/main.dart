@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'src/indexPage/model.dart';
-import 'src/indexPage/indexPage.dart';
+import 'src/indexPage/index.dart';
 void main() => runApp(new MyApp());
 class MyApp extends StatelessWidget {
   @override

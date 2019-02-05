@@ -13,3 +13,14 @@ Future<List> getNotes(int pageNum,int pageSize) async {
   List<Note> notes = data.map((note)=> Note.fromJson(note)).toList(); 
   return notes;
 }
+Future<List> getSimilar(int noteId) async {
+  var response = await http.get(
+      Uri.encodeFull('$baseUrl/getSimilar/$noteId'),
+      headers: {"Accept": "application/json"}
+  );
+  // Map _jsonData 
+  List data = json.decode(response.body);
+  List<Note> notes = data.map((note)=> Note.fromJson(note)).toList(); 
+  return notes;
+}
+
