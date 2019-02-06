@@ -1,40 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'detailPage/index.dart';
-// import 'detailPage/model.dart';
-// import 'package:scoped_model/scoped_model.dart';
 final _noteFont = const TextStyle(fontSize: 16.0);
 class Note {
   String content;
   int id;
   int modifyTime;
   int createTime;
-  Note({this.content, this.id, this.modifyTime, this.createTime});
+  List matchList;
+  Note({this.matchList,this.content, this.id, this.modifyTime, this.createTime});
   factory Note.fromJson(Map<String, dynamic> json) {
+    if(json['match_list']==null) {
+      json['match_list'] = [];
+    }
     return Note(
-      content: json['content'],
+      content: json['content'].trim(),
       id: json['id'],
       modifyTime: json['modify_time'],
       createTime: json['create_time'],
+      matchList: json['match_list']
     );
   }
 }
 Widget buildNoteRow(Note note,BuildContext context) {
   return ListTile(
     title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
-    subtitle: Text(convertTime(note)),
+    subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
     onTap: () {
-      // ScopedModel.of<DetailModel>(context, rebuildOnChange: true).getSimilarList(note.id);
       openAddEntryDialog(context,note:note);
     },
   );
 }
-/* 
-ScopedModel<DetailModel>(
-    model: DetailModel(),
-    child:  
-ScopedModelDescendant<DetailModel>(
-      builder: (context, child, model) => */
+String convertToDetailTime(Note note){
+  var format = new DateFormat('yyyy-MM-dd HH:mm a');
+  var date = new DateTime.fromMillisecondsSinceEpoch(note.modifyTime * 1000);
+  String time = format.format(date);
+  return time;
+}
 String convertTime(Note note){
   var now = new DateTime.now();
   var format = new DateFormat('HH:mm a');

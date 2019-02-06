@@ -2,7 +2,7 @@ import '../note.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'model.dart';
-import 'buildProgressIndicator.dart';
+import '../buildProgressIndicator.dart';
 var buildMainList = () => ScopedModelDescendant<IndexModel>(
   builder: (context, child, model) => NotificationListener(
     onNotification:(noti){ 
