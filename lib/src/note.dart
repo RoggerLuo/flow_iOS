@@ -27,7 +27,7 @@ Widget buildNoteRow(Note note,BuildContext context) {
     title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
     subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
     onTap: () {
-      openAddEntryDialog(context,note:note);
+      routeToDetail(context,note:note);
     },
   );
 }
