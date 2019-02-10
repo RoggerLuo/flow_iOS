@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import '../note.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import '../http_service.dart';
-
 Future<String> routeToNew(context,{Note note,changeNote}) async {
   return Navigator.of(context).push(MaterialPageRoute( //<Null>
     builder: (BuildContext context2) {
-      return EditPage(note:note,changeNote:changeNote,scaffoldContext:context);
+      return EditPage(note:note,changeNote:changeNote);
     },
     fullscreenDialog: true
   ));
 }
-void routeToEdit(context,{Note note,changeNote}) {
-  Navigator.of(context).push(MaterialPageRoute( //<Null>
+Future<String> routeToEdit(context,{Note note,changeNote}) async {
+  return Navigator.of(context).push(MaterialPageRoute( //<Null>
     builder: (BuildContext context2) {
-      return EditPage(note:note,changeNote:changeNote,scaffoldContext:context);
+      return EditPage(note:note,changeNote:changeNote);
     },
     fullscreenDialog: true
   ));
@@ -24,11 +23,11 @@ class EditPage extends StatefulWidget {
     Key key,
     this.note,
     this.changeNote,
-    this.scaffoldContext
+    // this.scaffoldContext
   }) : super(key: key);
   final Note note;
   final changeNote;
-  final BuildContext scaffoldContext;
+  // final BuildContext scaffoldContext;
   @override
   EditPageState createState() => new EditPageState();
 }
@@ -38,7 +37,7 @@ class EditPageState extends State<EditPage> {
     FocusScope.of(context).requestFocus(_nodeText1);
   }
   final myController = TextEditingController();
-  var _scaffoldContext; //为了使用snack，必须使用scaffold的context，而不是更上层的
+  // var _scaffoldContext; //为了使用snack，必须使用scaffold的context，而不是更上层的
   Note _note;
   bool saved = true;
   @override
@@ -74,13 +73,7 @@ class EditPageState extends State<EditPage> {
           String rs = await modifyNote(widget.note);
           if(rs == 'success') {
             saved = true;
-            Navigator.pop(context);
-            Scaffold.of(widget.scaffoldContext).showSnackBar(
-              SnackBar(
-                content: Text("保存成功"),
-                backgroundColor:Colors.lightGreen
-              )
-            );
+            Navigator.of(context).pop(rs);
           }
         }),
         actions: [
@@ -108,7 +101,7 @@ class EditPageState extends State<EditPage> {
       ),
       body: Builder( // 使用builder是为了暴露出context
         builder: (context) { 
-          _scaffoldContext = context;
+          // _scaffoldContext = context;
           return FormKeyboardActions(
             keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
             keyboardBarColor: Colors.transparent, //Colors.grey[200],//

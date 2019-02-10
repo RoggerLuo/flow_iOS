@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
     return ScopedModel<IndexModel>(
       model: IndexModel(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Reflection',
         theme: new ThemeData(primaryColor: Colors.blueGrey, accentColor: Colors.blueGrey),
         home: IndexPage()

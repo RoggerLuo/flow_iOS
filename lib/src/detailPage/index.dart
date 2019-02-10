@@ -4,6 +4,9 @@ import 'package:flutter_tags/selectable_tags.dart';
 import '../http_service.dart';
 import '../buildProgressIndicator.dart';
 import '../editPage/index.dart';
+Future sleep(int _milliseconds) {
+  return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
+}
 void routeToDetail(context,{Note note}) {
   Navigator.of(context).push(new MaterialPageRoute( //<Null>
     builder: (BuildContext context) {
@@ -47,16 +50,28 @@ class DetailPageState extends State<DetailPage> {
         }else{
           _selected_tags.remove(tagText);
         }
+        if(_selected_tags.length == 0) {
+          setState(() {
+            _filtered_notes = _notes;
+          });
+          return;
+        }
         for (var x = 0; x < _notes.length; x++) {
           Note _note = _notes[x];
-          for (var j = 0; j < _note.matchList.length; j++) {
-            var currentWord = _note.matchList[j];
-            if(_selected_tags.indexOf(currentWord) != -1){
-              if(_note.id != widget.note.id){ // 去除当前笔记
-                _filtered_notes.add(_note);
-              }
+          bool thisNoteIncludesAllKeywords = true;
+          bool thisNoteIsNotCurrentNote = true;
+          for (var j = 0; j < _selected_tags.length; j++) {
+            var currentWord = _selected_tags[j];
+            if(_note.matchList.indexOf(currentWord) == -1){
+              thisNoteIncludesAllKeywords = false;
             }
-          }          
+            if(_note.id == widget.note.id){ // 去除当前笔记
+              thisNoteIsNotCurrentNote = false;            
+            }
+          }
+          if(thisNoteIncludesAllKeywords && thisNoteIsNotCurrentNote) {
+            _filtered_notes.add(_note);
+          }
         }
       },
     );
@@ -104,13 +119,23 @@ class DetailPageState extends State<DetailPage> {
       noteList.add(Divider(height: 0.0));
       noteList.add(buildNoteRow(_filtered_notes[x],context));
     }
+    noteList.add(Divider(height: 0.0));
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
         actions: [
           FlatButton(
-            onPressed: () {
-              routeToEdit(_scaffoldContext,note:widget.note,changeNote:changeNote); //changeNote
+            onPressed: () async {
+              String rs = await routeToEdit(_scaffoldContext,note:widget.note,changeNote:changeNote); //changeNote
+              if(rs == 'success') {
+                await sleep(300);
+                Scaffold.of(_scaffoldContext).showSnackBar(
+                  SnackBar(
+                    content: Text("保存成功"),
+                    backgroundColor:Colors.lightGreen
+                  )
+                );
+              }
             },
             child: Text('编辑',style: Theme.of(context).textTheme.subhead.copyWith(color: Colors.white))
           ),              
