@@ -8,7 +8,7 @@ class Note {
   int modifyTime;
   int createTime;
   List matchList;
-  Note({this.matchList,this.content, this.id, this.modifyTime, this.createTime});
+  Note({this.matchList, this.content, this.id, this.modifyTime, this.createTime});
   factory Note.fromJson(Map<String, dynamic> json) {
     if(json['match_list']==null) {
       json['match_list'] = [];

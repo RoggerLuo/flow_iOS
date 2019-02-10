@@ -26,6 +26,8 @@ class DetailPageState extends State<DetailPage> {
   List<Note> _notes = [];
   List<String> _selected_tags = [];
   List<Note> _filtered_notes = [];
+  Note _note;
+  BuildContext _scaffoldContext;
   Widget getSelectableTags(_tags){
     return SelectableTags(
       borderSide: BorderSide(width: 1.0, color: Colors.grey[300]),
@@ -50,9 +52,9 @@ class DetailPageState extends State<DetailPage> {
           for (var j = 0; j < _note.matchList.length; j++) {
             var currentWord = _note.matchList[j];
             if(_selected_tags.indexOf(currentWord) != -1){
-              // setState((){
+              if(_note.id != widget.note.id){ // 去除当前笔记
                 _filtered_notes.add(_note);
-              // });
+              }
             }
           }          
         }
@@ -75,7 +77,8 @@ class DetailPageState extends State<DetailPage> {
       _isPerformingRequest = true;
     });
     print('get similar request...');
-    List<Note> notes = await getSimilar(noteId); 
+    List<Note> notes = await getSimilar(noteId);
+    notes.removeAt(0);
     handleKeywords(notes);
     setState(() {
       _notes.addAll(notes);
@@ -83,9 +86,15 @@ class DetailPageState extends State<DetailPage> {
       _isPerformingRequest = false;
     });
   }
+  void changeNote(content){
+    setState(() {
+      _note.content = content;
+    });
+  }
   @override
   initState(){
     super.initState();
+    _note = widget.note;
     getSimilarList(widget.note.id);
   }
   @override
@@ -95,25 +104,29 @@ class DetailPageState extends State<DetailPage> {
       noteList.add(Divider(height: 0.0));
       noteList.add(buildNoteRow(_filtered_notes[x],context));
     }
-    return  Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text(''),
         actions: [
           FlatButton(
             onPressed: () {
-              routeToEdit(context,note:widget.note);
+              routeToEdit(_scaffoldContext,note:widget.note,changeNote:changeNote); //changeNote
             },
             child: Text('编辑',style: Theme.of(context).textTheme.subhead.copyWith(color: Colors.white))
           ),              
         ],
       ),
-      body: ListView(
-        children: <Widget>[
+      body: Builder( // 使用builder是为了暴露出context
+        builder: (context) {
+          _scaffoldContext = context;
+
+          return ListView(
+            children: <Widget>[
           Container( // note content
             // constraints:BoxConstraints(minHeight:100),
             color:Colors.white,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 32, 16, 0), //all(16.0),
+              padding: EdgeInsets.fromLTRB(16, 28, 16, 0), //all(16.0),
               child: Text(widget.note.content,style:TextStyle(fontSize: 17.0))
             )
           ),
@@ -126,7 +139,7 @@ class DetailPageState extends State<DetailPage> {
                 mainAxisSize: MainAxisSize.min,
                 children:<Widget>[
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 16, 0, 24), //all(16.0),
+                    padding: EdgeInsets.fromLTRB(0, 18, 0, 20), //all(16.0),
                     child: Text(convertToDetailTime(widget.note),style:TextStyle(fontSize: 14.0,color: Colors.grey))
                   ),
               ]),
@@ -178,12 +191,21 @@ class DetailPageState extends State<DetailPage> {
             )
           ),
           Container(
+            color:Colors.white,
             child: Padding(
               padding: EdgeInsets.all(0.0),
               child: buildProgressIndicator(_isPerformingRequest)
             )
           ),
+          Container( // placeholder
+            color:Colors.white,
+            constraints:BoxConstraints(minHeight:200),
+            child: Text('')
+          ),
+
         ]
+          ); 
+        }
       )          
     );
   }

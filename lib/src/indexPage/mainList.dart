@@ -8,27 +8,26 @@ var buildMainList = () => ScopedModelDescendant<IndexModel>(
     onNotification:(noti){ 
       if(noti is ScrollUpdateNotification){
         if (noti.metrics.pixels == noti.metrics.maxScrollExtent) {
-          ScopedModel.of<IndexModel>(context, rebuildOnChange: true).onScrollBottom();
+          ScopedModel.of<IndexModel>(context, rebuildOnChange: true).getMoreData(startIdx: model.notes.length);
         }
       }
       return false;
     },
     child: ListView.separated(
-        separatorBuilder: (BuildContext context, int index) => Divider(height: 0.0),
-        padding: const EdgeInsets.all(0),
-        itemCount: model.notes.length + 1,
-        itemBuilder: (context, index) {
-          if(model.notes.length == 0){
-            model.onScrollBottom();
-          }
-          if (index == model.notes.length) {
-            return buildProgressIndicator(model.isPerformingRequest);
-          } else {
-            return buildNoteRow(model.notes[index],context);
-          }
+      separatorBuilder: (BuildContext context, int index) => Divider(height: 0.0),
+      padding: const EdgeInsets.all(0),
+      itemCount: model.notes.length + 1,
+      itemBuilder: (context, index) {
+        if(model.notes.length == 0){ // init data
+          model.getMoreData(startIdx:0);
         }
-      )
-    
+        if (index == model.notes.length) {
+          return buildProgressIndicator(model.isPerformingRequest);
+        } else {
+          return buildNoteRow(model.notes[index],context);
+        }
+      }
+    )
   )
 );
     
