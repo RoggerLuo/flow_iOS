@@ -24,6 +24,9 @@ var buildMainList = () => ScopedModelDescendant<IndexModel>(
         if (index == model.notes.length) {
           return buildProgressIndicator(model.isPerformingRequest);
         } else {
+          if(model.notes.length ==1 && model.notes[0].id == -2){
+            return Text('网络连接错误');
+          }
           return buildNoteRow(model.notes[index],context);
         }
       }

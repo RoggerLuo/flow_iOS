@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'note.dart';
 final String baseUrl = "http://rorrc.3322.org:6664";
 int pageSize = 15;
+Future sleep(int _milliseconds) {
+  return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
+}
 Future<List> getNotes(int start) async {
   var response = await http.get(
     Uri.encodeFull('$baseUrl/notes?start=${start.toString()}&pageSize=${pageSize.toString()}'),
@@ -11,6 +14,10 @@ Future<List> getNotes(int start) async {
   ).catchError((e){
     print(e);
   });
+  if(response == null) {
+    List<Note> empty= [Note(id:-2,content:'')];
+    return empty;
+  }
   if(response.statusCode==200) {
     Map _jsonData = json.decode(response.body);
     List data = _jsonData['data'];

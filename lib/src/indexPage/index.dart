@@ -16,6 +16,7 @@ class IndexPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: ,
       appBar: AppBar(
         title: new Text('Reflection'),
         leading : IconButton(icon: Icon(Icons.list), onPressed: _refreshNotesButton),
