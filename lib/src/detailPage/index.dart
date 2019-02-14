@@ -117,7 +117,7 @@ class DetailPageState extends State<DetailPage> {
     List<Widget> noteList = [];
     for (var x = 0; x < _filtered_notes.length; x++) {
       noteList.add(Divider(height: 0.0));
-      noteList.add(buildNoteRow(_filtered_notes[x],context));
+      noteList.add(buildNoteRow(_filtered_notes[x],context,x));
     }
     noteList.add(Divider(height: 0.0));
     return Scaffold(

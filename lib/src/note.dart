@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'detailPage/index.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'indexPage/model.dart';
+
 final _noteFont = const TextStyle(fontSize: 16.0);
 class Note {
   String content;
@@ -22,13 +25,28 @@ class Note {
     );
   }
 }
-Widget buildNoteRow(Note note,BuildContext context) {
-  return ListTile(
-    title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
-    subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
-    onTap: () {
-      routeToDetail(context,note:note);
+
+Widget buildNoteRow(Note note,BuildContext context,int index) {
+  
+  return Dismissible(
+    key: Key(note.id.toString()),
+    onDismissed: (direction) {
+      ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
+
+      // setState(() {
+      //   _notes.removeAt(index);
+      // });
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text("dismissed")));
     },
+    // Show a red background as the item is swiped away
+    background: Container(color: Colors.red),
+    child: ListTile(
+      title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
+      subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
+      onTap: () {
+        routeToDetail(context,note:note);
+      },
+    )
   );
 }
 String convertToDetailTime(Note note){

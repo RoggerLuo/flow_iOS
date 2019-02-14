@@ -16,7 +16,17 @@ class IndexPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: ,
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            ListTile(
+              title: Text("drawer page"),
+              trailing: Icon(Icons.arrow_downward),
+            ),
+            
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: new Text('Reflection'),
         leading : IconButton(icon: Icon(Icons.list), onPressed: _refreshNotesButton),

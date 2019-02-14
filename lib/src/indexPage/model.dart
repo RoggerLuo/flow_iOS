@@ -13,7 +13,10 @@ class IndexModel extends Model {
   Future sleep(int _milliseconds) {
     return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
   }
-  
+  void deleteNote(int index)  { //async
+    _notes.removeAt(index);
+    notifyListeners();
+  }
   void refreshData() async {
     if (!_isPerformingRequest) {
       _notes = [];
