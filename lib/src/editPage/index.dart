@@ -111,7 +111,7 @@ class EditPageState extends State<EditPage> {
                 focusNode: _nodeText1,
                 closeWidget: Padding(
                   padding: EdgeInsets.fromLTRB(8.0, 2, 10.0, 10.0),//all(8.0)
-                  child: Icon(Icons.details),
+                  child: Icon(Icons.keyboard),
                 ),
               ),
             ],

@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'detailPage/index.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'indexPage/model.dart';
+import 'dialog.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 final _noteFont = const TextStyle(fontSize: 16.0);
 class Note {
@@ -27,16 +29,63 @@ class Note {
 }
 
 Widget buildNoteRow(Note note,BuildContext context,int index) {
-  
+  void _showSnackBar(String abc){
+    Scaffold.of(context).showSnackBar(SnackBar(content: Text("dismissed")));
+  }
+  final alreadySaved = false;//_saved.contains(pair);
+  return new Slidable(
+    delegate: new SlidableDrawerDelegate(),
+    actionExtentRatio: 0.25,
+    child: new Container(
+      color: Colors.white,
+      child: new ListTile(
+        
+        title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
+        subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
+        trailing: new Icon(
+          alreadySaved ? Icons.star : Icons.star_border,
+          color: alreadySaved ? Colors.yellow : null,
+        ),
+      ),
+    ),
+    actions: <Widget>[
+      // new IconSlideAction(
+      //   caption: 'Archive',
+      //   color: Colors.blue,
+      //   icon: Icons.archive,
+      //   onTap: () => _showSnackBar('Archive'),
+      // ),
+      // new IconSlideAction(
+      //   caption: 'Share',
+      //   color: Colors.indigo,
+      //   icon: Icons.share,
+      //   onTap: () => _showSnackBar('Share'),
+      // ),
+    ],
+    secondaryActions: <Widget>[
+      new IconSlideAction(
+        caption: 'More',
+        color: Colors.black45,
+        icon: Icons.more_horiz,
+        onTap: () => _showSnackBar('More'),
+      ),
+      new IconSlideAction(
+        caption: 'Delete',
+        color: Colors.red,
+        icon: Icons.delete,
+        onTap: () => _showSnackBar('Delete'),
+      ),
+    ],
+  );
   return Dismissible(
     key: Key(note.id.toString()),
-    onDismissed: (direction) {
-      ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
+    onDismissed: (direction) async {
+      ConfirmAction rs = await confirmDialog(context);
+      if(rs == ConfirmAction.ACCEPT) {
+        ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text("dismissed")));
+      }
 
-      // setState(() {
-      //   _notes.removeAt(index);
-      // });
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text("dismissed")));
     },
     // Show a red background as the item is swiped away
     background: Container(color: Colors.red),

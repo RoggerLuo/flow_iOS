@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 enum ConfirmAction { CANCEL, ACCEPT }
 
-
-Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
+Future<ConfirmAction> confirmDialog(BuildContext context) async {
   return showDialog<ConfirmAction>(
     context: context,
     barrierDismissible: false, // user must tap button for close dialog!
@@ -30,7 +29,7 @@ Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
     },
   );
 }
-Future confirmDialog(BuildContext context){
+// Future confirmDialog(BuildContext context){
    
-  return _asyncConfirmDialog(context);
-}
+//   return _asyncConfirmDialog(context);
+// }

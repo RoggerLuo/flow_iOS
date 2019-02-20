@@ -28,8 +28,8 @@ class IndexPageState extends State<IndexPage> {
         ),
       ),
       appBar: AppBar(
-        title: new Text('Reflection'),
-        leading : IconButton(icon: Icon(Icons.list), onPressed: _refreshNotesButton),
+        title: new Text('Flow'),
+        leading : IconButton(icon: Icon(Icons.list), onPressed: _openDrawer),
         actions: <Widget>[
           IconButton(icon: Icon(Icons.refresh), onPressed: _refreshNotesButton)
         ],
@@ -66,6 +66,9 @@ class IndexPageState extends State<IndexPage> {
         ),
       ),
     );
+  }
+  void _openDrawer(){
+    Scaffold.of(_bodyContext).openDrawer();
   }
   void _refreshNotesButton() {
     ScopedModel.of<IndexModel>(context, rebuildOnChange: true).refreshData();
