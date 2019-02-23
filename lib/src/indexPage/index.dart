@@ -11,22 +11,23 @@ class IndexPage extends StatefulWidget {
   @override
   createState() => IndexPageState();
 }
+Widget drawer(context) => Drawer(
+  child: ListView(
+    children: <Widget>[
+      ListTile(
+        title: Text("drawer page"),
+        trailing: Icon(Icons.arrow_downward),
+      ),
+    ],
+  ),
+);
+
 class IndexPageState extends State<IndexPage> {
   BuildContext _bodyContext;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            ListTile(
-              title: Text("drawer page"),
-              trailing: Icon(Icons.arrow_downward),
-            ),
-            
-          ],
-        ),
-      ),
+      drawer: drawer(context),
       appBar: AppBar(
         title: new Text('Flow'),
         leading : IconButton(icon: Icon(Icons.list), onPressed: _openDrawer),

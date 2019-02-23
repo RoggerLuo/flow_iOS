@@ -43,4 +43,7 @@ class IndexModel extends Model {
       print('onScrollBottom...');
     }
   }
+  void markNote(){
+    
+  }
 }
