@@ -43,9 +43,13 @@ Widget buildNoteRow(Note note,BuildContext context,int index) {
         title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
         subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
         trailing: new Icon(
-          alreadySaved ? Icons.star : Icons.star_border,
-          color: alreadySaved ? Colors.yellow : null,
+          Icons.star ,
+          color: alreadySaved ? Colors.yellow : Colors.grey[100],
         ),
+        onTap: () {
+        routeToDetail(context,note:note);
+      },
+
       ),
     ),
     actions: <Widget>[
@@ -70,33 +74,43 @@ Widget buildNoteRow(Note note,BuildContext context,int index) {
         onTap: () => _showSnackBar('More'),
       ),
       new IconSlideAction(
-        caption: 'Delete',
+        caption: '删除',
         color: Colors.red,
         icon: Icons.delete,
-        onTap: () => _showSnackBar('Delete'),
+        onTap: () async {
+          // _showSnackBar('Delete');
+          ConfirmAction rs = await confirmDialog(context,note.content);
+          if(rs == ConfirmAction.ACCEPT) {
+            ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text("已删除"),
+              backgroundColor:Colors.lightGreen
+            ));
+          }
+
+        },
       ),
     ],
   );
-  return Dismissible(
-    key: Key(note.id.toString()),
-    onDismissed: (direction) async {
-      ConfirmAction rs = await confirmDialog(context);
-      if(rs == ConfirmAction.ACCEPT) {
-        ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text("dismissed")));
-      }
-
-    },
+  // return Dismissible(
+  //   key: Key(note.id.toString()),
+  //   onDismissed: (direction) async {
+  //     ConfirmAction rs = await confirmDialog(context);
+  //     if(rs == ConfirmAction.ACCEPT) {
+  //       ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
+  //       Scaffold.of(context).showSnackBar(SnackBar(content: Text("dismissed")));
+  //     }
+  //   },
     // Show a red background as the item is swiped away
-    background: Container(color: Colors.red),
-    child: ListTile(
-      title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
-      subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
-      onTap: () {
-        routeToDetail(context,note:note);
-      },
-    )
-  );
+    // background: Container(color: Colors.red),
+    // child: ListTile(
+      // title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
+      // subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
+      // onTap: () {
+      //   routeToDetail(context,note:note);
+      // },
+  //   )
+  // );
 }
 String convertToDetailTime(Note note){
   var format = new DateFormat('yyyy-MM-dd HH:mm a');

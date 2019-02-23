@@ -4,6 +4,7 @@ import 'model.dart';
 import 'mainList.dart';
 import '../editPage/index.dart';
 import '../note.dart';
+import '../searchPage/index.dart';
 Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
 }
@@ -13,11 +14,57 @@ class IndexPage extends StatefulWidget {
 }
 Widget drawer(context) => Drawer(
   child: ListView(
+    padding: EdgeInsets.zero,
     children: <Widget>[
-      ListTile(
-        title: Text("drawer page"),
-        trailing: Icon(Icons.arrow_downward),
+      UserAccountsDrawerHeader(
+        //accountName: Text('roger'),
+        accountEmail: Text('luojie.5408@163.com'),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.fill,
+            image: NetworkImage("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1550681609599&di=97e4c32f3462d340cf0bf0f316f9a402&imgtype=0&src=http%3A%2F%2Fdesk.fd.zol-img.com.cn%2Fg5%2FM00%2F02%2F0F%2FChMkJlbK7JeIFhACAArOl2v-eCMAALKjgJtPOEACs6v923.jpg"))
+          ),
       ),
+      ListTile(
+        title: Text("全部笔记"),
+        // contentPadding:EdgeInsets.zero ,
+        //trailing: Icon(Icons.arrow_downward),
+      ),
+//            Divider(),
+
+      ListTile(
+        title: Text("星标笔记"),
+        trailing: new Icon(
+          Icons.star,
+          color: Colors.yellow,
+        ),
+      ),
+      ListTile(
+        title: Text("全部笔记(时间倒序)"),
+      ),
+      ListTile(
+        title: Text("我的搜索关键词"),
+      ),
+      ListTile(
+        title: Text("偏好设置"),
+        trailing: new Icon(
+          Icons.settings,
+          color: Colors.grey[300],
+        ),
+
+      ),
+
+      // ListTile(
+      //   title: Text("drawer page"),
+      //   trailing: Icon(Icons.arrow_downward),
+      //   onTap: () {
+      //     // Update the state of the app
+      //     // ...
+      //     // Then close the drawer
+      //     Navigator.pop(context);
+      //   },
+      // ),
+
     ],
   ),
 );
@@ -29,9 +76,11 @@ class IndexPageState extends State<IndexPage> {
     return Scaffold(
       drawer: drawer(context),
       appBar: AppBar(
+        centerTitle: true,
         title: new Text('Flow'),
         leading : IconButton(icon: Icon(Icons.list), onPressed: _openDrawer),
         actions: <Widget>[
+          IconButton(icon: Icon(Icons.search), onPressed:()=>routeToSearch(_bodyContext)),
           IconButton(icon: Icon(Icons.refresh), onPressed: _refreshNotesButton)
         ],
       ),
@@ -45,7 +94,7 @@ class IndexPageState extends State<IndexPage> {
         }
       ),
       floatingActionButton: Theme(
-        data: Theme.of(context).copyWith(accentColor: Colors.blueGrey),
+        data: Theme.of(context).copyWith(accentColor: Color(0xff0083F0)),
         child: new FloatingActionButton(
           onPressed: () async {
             int createTime = DateTime.now().millisecondsSinceEpoch~/1000;
