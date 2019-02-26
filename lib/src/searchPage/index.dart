@@ -65,7 +65,7 @@ class DetailPageState extends State<DetailPage> {
         builder: (context) {
           _scaffoldContext = context;
 
-          return Text('又问题')
+          return Text('又问题');
         }
       )          
     );

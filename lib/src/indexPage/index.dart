@@ -5,13 +5,75 @@ import 'mainList.dart';
 import '../editPage/index.dart';
 import '../note.dart';
 import '../searchPage/index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../loginPage.dart';
+
+class MyHomeState extends State {
+  var nameOfApp = "Persist Key Value";
+  var counter = 0;
+  // define a key to use later
+  var key = "counter";
+  @override
+  void initState() {
+    super.initState();
+  }
+ 
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      // Appbar
+      appBar: new AppBar(
+        // Title
+        title: new Text(nameOfApp),
+      ),
+      // Body
+      body: new Container(
+        // Center the content
+        child: new Center(
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Text(
+                '$counter',
+                textScaleFactor: 10.0,
+              ),
+              new Padding(padding: new EdgeInsets.all(10.0)),
+              new RaisedButton(
+                  onPressed: (){},
+                  child: new Text('Increment Counter')),
+              new Padding(padding: new EdgeInsets.all(10.0)),
+              new RaisedButton(
+                  onPressed: (){},
+                  child: new Text('Decrement Counter')),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
 Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
+
 }
+
+
+
+
 class IndexPage extends StatefulWidget {
+  const IndexPage({
+    Key key,
+    this.context,
+    // this.scaffoldContext
+  }) : super(key: key);
+  final BuildContext context;
   @override
   createState() => IndexPageState();
 }
+
+
 Widget drawer(context) => Drawer(
   child: ListView(
     padding: EdgeInsets.zero,
@@ -69,8 +131,71 @@ Widget drawer(context) => Drawer(
   ),
 );
 
+
+class Content extends StatefulWidget {
+  const Content({
+    Key key,
+    this.context,
+    // this.scaffoldContext
+  }) : super(key: key);
+  final BuildContext context;
+
+  @override
+  createState() => ContentState();
+}
+class ContentState extends State<Content> {
+  @override
+  initState(){
+    super.initState();
+    routeToLoginPage(context);
+  }
+  @override
+  Widget build(BuildContext context) {
+      return Container(
+        color: Colors.white,
+        child: buildMainList(),            
+      );
+  }
+}
+
 class IndexPageState extends State<IndexPage> {
   BuildContext _bodyContext;
+  String token = '';
+  String key = 'token';
+  @override
+  initState(){
+    super.initState();
+    if(token=='') {
+
+      // routeToLoginPage(widget.context);
+      //await loginPage()
+    }else{
+      _loadSavedData(); 
+    }
+  }
+  _loadSavedData() async {
+    // Get shared preference instance
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      // Get value
+      token = (prefs.getString(key) ?? '0');
+    });
+  }
+
+  _onIncrementHit() async {
+    // Get shared preference instance
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      // Get value
+      token = (prefs.getString(key) ?? 0);
+    });
+
+    // Save Value
+    prefs.setString(key, token);
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,15 +209,13 @@ class IndexPageState extends State<IndexPage> {
           IconButton(icon: Icon(Icons.refresh), onPressed: _refreshNotesButton)
         ],
       ),
-      body: Builder( // 使用builder是为了暴露出context
-        builder: (context) {
-          _bodyContext = context;
-          return Container(
-            color: Colors.white,
-            child: buildMainList(),            
-          );
-        }
-      ),
+      body: Content(context:context),
+      // Builder( // 使用builder是为了暴露出context
+      //   builder: (context) {
+      //     _bodyContext = context;
+
+      //   }
+      // ),
       floatingActionButton: Theme(
         data: Theme.of(context).copyWith(accentColor: Color(0xff0083F0)),
         child: new FloatingActionButton(

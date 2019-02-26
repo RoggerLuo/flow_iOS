@@ -2,14 +2,14 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'note.dart';
-final String baseUrl = "http://rorrc.3322.org:6664";
+final String baseUrl = "http://rorrc.3322.org:32818";
 int pageSize = 15;
 Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
 }
 Future<List> getNotes(int start) async {
   var response = await http.get(
-    Uri.encodeFull('$baseUrl/notes?start=${start.toString()}&pageSize=${pageSize.toString()}'),
+    Uri.encodeFull('$baseUrl/notes?startIndex=${start.toString()}&pageSize=${pageSize.toString()}'),
     headers: {"Accept": "application/json"}
   ).catchError((e){
     print(e);
