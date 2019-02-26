@@ -166,6 +166,7 @@ class IndexPageState extends State<IndexPage> {
   initState(){
     super.initState();
     if(token=='') {
+      Future.delayed(Duration.zero, () => routeToLoginPage(context));
 
       // routeToLoginPage(widget.context);
       //await loginPage()
@@ -209,13 +210,20 @@ class IndexPageState extends State<IndexPage> {
           IconButton(icon: Icon(Icons.refresh), onPressed: _refreshNotesButton)
         ],
       ),
-      body: Content(context:context),
-      // Builder( // 使用builder是为了暴露出context
-      //   builder: (context) {
-      //     _bodyContext = context;
+      body: Builder( // 使用builder是为了暴露出context
+        builder: (context) {
+          _bodyContext = context;
+          if(token=='') {
 
-      //   }
-      // ),
+          }
+
+
+          return Container(
+            color: Colors.white,
+            child: buildMainList(),            
+          );
+        }
+      ),
       floatingActionButton: Theme(
         data: Theme.of(context).copyWith(accentColor: Color(0xff0083F0)),
         child: new FloatingActionButton(

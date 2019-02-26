@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'src/indexPage/model.dart';
 import 'src/indexPage/index.dart';
-void main() => runApp(new MyApp2());
+void main() => runApp(new MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -18,16 +18,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-  class MyApp2 extends StatelessWidget {
-    @override
-    Widget build(BuildContext context) {
-      return MaterialApp(
-          title: 'Trial',
-          home: Scaffold(
-              appBar: AppBar(title: Text('List scroll')), body: new MyHome()));
-    }
-  }
-
   class MyHome extends StatelessWidget { // Wrapper Widget
     @override
     Widget build(BuildContext context) {
@@ -36,7 +26,6 @@ class MyApp extends StatelessWidget {
         child: Text("Hello world"),
       );
     }
-
     void showAlert(BuildContext context) {
       showDialog(
           context: context,
