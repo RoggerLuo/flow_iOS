@@ -18,10 +18,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// import 'dart:async';
-// import 'package:flutter/material.dart';
-
-  
   class MyApp2 extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
