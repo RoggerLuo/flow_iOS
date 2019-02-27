@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'http_service.dart';
 Future<String> routeToLoginPage(context) async {
-  Navigator.of(context).push(new MaterialPageRoute( //<Null>
+  return Navigator.of(context).push(new MaterialPageRoute( //<Null>
     builder: (BuildContext context) {
       return new SignupPage();
     }
   ));
 }
-
 class SignupPage extends StatefulWidget {
   @override
   _SignupPageState createState() => _SignupPageState();
 }
-
 class _SignupPageState extends State<SignupPage> {
   String username='';
   String password='';
+  String loginStatus='';
   void _tapConfirm() async {
     String token = await login(username,password);
     Navigator.of(context).pop(token);
@@ -31,7 +30,7 @@ class _SignupPageState extends State<SignupPage> {
                 child: Stack(
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.fromLTRB(16.0, 50.0, 0.0, 0.0),
+                      padding: EdgeInsets.fromLTRB(16.0, 80.0, 0.0, 0.0),
                       child: Text(
                         '登录',
                         style: TextStyle(
@@ -106,41 +105,16 @@ class _SignupPageState extends State<SignupPage> {
                               child: Text(
                                 '确定',
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Montserrat'),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Montserrat'
+                                ),
                               ),
                             ),
                           ),
                         )
                       ),
-                      // SizedBox(height: 20.0),
-                      // Container(
-                      //   height: 40.0,
-                      //   color: Colors.transparent,
-                      //   child: Container(
-                      //     decoration: BoxDecoration(
-                      //         border: Border.all(
-                      //             color: Colors.black,
-                      //             style: BorderStyle.solid,
-                      //             width: 1.0),
-                      //         color: Colors.transparent,
-                      //         borderRadius: BorderRadius.circular(20.0)),
-                      //     child: InkWell(
-                      //       onTap: () {
-                      //         Navigator.of(context).pop();
-                      //       },
-                      //       child: Center(
-                      //         child: Text('',
-                      //             style: TextStyle(
-                      //                 fontWeight: FontWeight.bold,
-                      //                 fontFamily: 'Montserrat')),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                       SizedBox(height: 40.0),
-
                     ],
                   )
               ),
