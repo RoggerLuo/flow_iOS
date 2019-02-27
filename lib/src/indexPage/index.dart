@@ -165,6 +165,7 @@ class IndexPageState extends State<IndexPage> {
   @override
   initState(){
     super.initState();
+    
     if(token=='') {
       Future.delayed(Duration.zero, () async {
         String _token = await routeToLoginPage(context);
@@ -215,11 +216,6 @@ class IndexPageState extends State<IndexPage> {
       body: Builder( // 使用builder是为了暴露出context
         builder: (context) {
           _bodyContext = context;
-          if(token=='') {
-
-          }
-
-
           return Container(
             color: Colors.white,
             child: buildMainList(),            

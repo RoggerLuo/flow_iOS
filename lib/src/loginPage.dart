@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'http_service.dart';
 Future<String> routeToLoginPage(context) async {
   Navigator.of(context).push(new MaterialPageRoute( //<Null>
     builder: (BuildContext context) {
@@ -14,6 +14,12 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  String username='';
+  String password='';
+  void _tapConfirm() async {
+    String token = await login(username,password);
+    Navigator.of(context).pop(token);
+  }
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -52,17 +58,30 @@ class _SignupPageState extends State<SignupPage> {
                     children: <Widget>[
                       SizedBox(height: 10.0),
                       TextField(
+                        onChanged: (text) {
+                          setState((){
+                            username = text;
+                          });
+                        },
                         decoration: InputDecoration(
-                            labelText: ' 账号(Email) ',
-                            labelStyle: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Theme.of(context).primaryColor))),
+                          labelText: ' 账号(Email) ',
+                          labelStyle: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Theme.of(context).primaryColor)
+                          )
+                        ),
                         obscureText: true,
                       ),
                       TextField(
+                        onChanged: (text) {
+                          setState((){
+                            password = text;
+                          });
+                        },
                         decoration: InputDecoration(
                             labelText: ' 密码 ',
                             labelStyle: TextStyle(
@@ -82,11 +101,7 @@ class _SignupPageState extends State<SignupPage> {
                           color: Colors.green,
                           elevation: 7.0,
                           child: GestureDetector(
-                            onTap: () async {
-                              String token = '123';
-                              Navigator.of(context).pop(token);
-
-                            },
+                            onTap: _tapConfirm,
                             child: Center(
                               child: Text(
                                 '确定',

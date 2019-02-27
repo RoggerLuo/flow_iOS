@@ -7,6 +7,7 @@ int pageSize = 15;
 Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
 }
+
 Future<List> getNotes(int start) async {
   var response = await http.get(
     Uri.encodeFull('$baseUrl/notes?startIndex=${start.toString()}&pageSize=${pageSize.toString()}'),
@@ -26,8 +27,8 @@ Future<List> getNotes(int start) async {
   }else{
     return [];
   }
-
 }
+
 Future<List> getSimilar(int noteId) async {
   var response = await http.get(
       Uri.encodeFull('$baseUrl/getSimilar/$noteId'),
@@ -39,6 +40,7 @@ Future<List> getSimilar(int noteId) async {
   List<Note> notes = data.map((note)=> Note.fromJson(note)).toList(); 
   return notes;
 }
+
 Future<String> modifyNote(note) async {  
   var response = await http.post(
     Uri.encodeFull('$baseUrl/note/${note.id}'), 
@@ -54,6 +56,7 @@ Future<String> modifyNote(note) async {
     return 'fail';
   }
 }
+
 Future<int> createNote(note) async {  
   var response = await http.post(
     Uri.encodeFull('$baseUrl/note'),
@@ -70,5 +73,22 @@ Future<int> createNote(note) async {
     return data['data']['insert_id'];
   } else {
     return -1;
+  }
+}
+
+Future<String> login(username,password) async {  
+  var response = await http.post(
+    Uri.encodeFull('$baseUrl/auth/login'),
+    body: {"username": username,"password":password},
+    headers: {"content-type": "application/x-www-form-urlencoded"}
+  ).catchError((e){
+    print(e);
+  });
+  if(response == null) return '';
+  if(response.statusCode == 200) {
+    var data = json.decode(response.body);
+    return data;
+  } else {
+    return '';
   }
 }
