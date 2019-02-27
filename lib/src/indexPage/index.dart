@@ -132,31 +132,31 @@ Widget drawer(context) => Drawer(
 );
 
 
-class Content extends StatefulWidget {
-  const Content({
-    Key key,
-    this.context,
-    // this.scaffoldContext
-  }) : super(key: key);
-  final BuildContext context;
+// class Content extends StatefulWidget {
+//   const Content({
+//     Key key,
+//     this.context,
+//     // this.scaffoldContext
+//   }) : super(key: key);
+//   final BuildContext context;
 
-  @override
-  createState() => ContentState();
-}
-class ContentState extends State<Content> {
-  @override
-  initState(){
-    super.initState();
-    routeToLoginPage(context);
-  }
-  @override
-  Widget build(BuildContext context) {
-      return Container(
-        color: Colors.white,
-        child: buildMainList(),            
-      );
-  }
-}
+//   @override
+//   createState() => ContentState();
+// }
+// class ContentState extends State<Content> {
+//   @override
+//   initState(){
+//     super.initState();
+//     routeToLoginPage(context);
+//   }
+//   @override
+//   Widget build(BuildContext context) {
+//       return Container(
+//         color: Colors.white,
+//         child: buildMainList(),            
+//       );
+//   }
+// }
 
 class IndexPageState extends State<IndexPage> {
   BuildContext _bodyContext;
@@ -166,10 +166,12 @@ class IndexPageState extends State<IndexPage> {
   initState(){
     super.initState();
     if(token=='') {
-      Future.delayed(Duration.zero, () => routeToLoginPage(context));
-
-      // routeToLoginPage(widget.context);
-      //await loginPage()
+      Future.delayed(Duration.zero, () async {
+        String _token = await routeToLoginPage(context);
+        setState((){
+          token = _token;
+        });
+      });
     }else{
       _loadSavedData(); 
     }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void routeToLoginPage(context) {
+Future<String> routeToLoginPage(context) async {
   Navigator.of(context).push(new MaterialPageRoute( //<Null>
     builder: (BuildContext context) {
       return new SignupPage();
@@ -27,7 +27,7 @@ class _SignupPageState extends State<SignupPage> {
                     Container(
                       padding: EdgeInsets.fromLTRB(16.0, 50.0, 0.0, 0.0),
                       child: Text(
-                        '注册',
+                        '登录',
                         style: TextStyle(
                             fontSize: 60.0, fontWeight: FontWeight.bold),
                       ),
@@ -37,9 +37,10 @@ class _SignupPageState extends State<SignupPage> {
                       child: Text(
                         '.',
                         style: TextStyle(
-                            fontSize: 80.0,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF0083F0)),
+                          fontSize: 80.0,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0083F0)
+                        ),
                       ),
                     )
                   ],
@@ -49,76 +50,29 @@ class _SignupPageState extends State<SignupPage> {
                   padding: EdgeInsets.only(top: 15.0, left: 20.0, right: 20.0),
                   child: Column(
                     children: <Widget>[
-                      // TextField(
-                      //   decoration: InputDecoration(
-                      //       labelText: 'Full Name',
-                      //       labelStyle: TextStyle(
-                      //           fontFamily: 'Montserrat',
-                      //           fontWeight: FontWeight.bold,
-                      //           color: Colors.grey),
-                      //       // hintText: 'EMAIL',
-                      //       // hintStyle: ,
-                      //       focusedBorder: UnderlineInputBorder(
-                      //           borderSide: BorderSide(color: Colors.green))),
-                      // ),
                       SizedBox(height: 10.0),
                       TextField(
                         decoration: InputDecoration(
-                            labelText: 'Email Address ',
+                            labelText: ' 账号(Email) ',
                             labelStyle: TextStyle(
                                 fontFamily: 'Montserrat',
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey),
                             focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.green))),
-                        obscureText: true,
-                      ),
-                      // SizedBox(height: 10.0),
-                      TextField(
-                        decoration: InputDecoration(
-                            labelText: 'Confirm Email Address ',
-                            labelStyle: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.green))),
-                      ),
-                      // SizedBox(height: 10.0),
-                      TextField(
-                        decoration: InputDecoration(
-                            labelText: 'Password',
-                            labelStyle: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.green))),
+                                borderSide: BorderSide(color: Theme.of(context).primaryColor))),
                         obscureText: true,
                       ),
                       TextField(
                         decoration: InputDecoration(
-                            labelText: 'Password confirm',
+                            labelText: ' 密码 ',
                             labelStyle: TextStyle(
                                 fontFamily: 'Montserrat',
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey),
                             focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.green))),
+                                borderSide: BorderSide(color: Theme.of(context).primaryColor))),
                         obscureText: true,
                       ),
-                      // SizedBox(height: 10.0),
-                      // TextField(
-                      //   decoration: InputDecoration(
-                      //       labelText: 'Phone Number ',
-                      //       labelStyle: TextStyle(
-                      //           fontFamily: 'Montserrat',
-                      //           fontWeight: FontWeight.bold,
-                      //           color: Colors.grey),
-                      //       focusedBorder: UnderlineInputBorder(
-                      //           borderSide: BorderSide(color: Colors.green))),
-                      //   obscureText: true,
-                      // ),
                       SizedBox(height: 30.0),
                       Container(
                         height: 40.0,
@@ -128,10 +82,14 @@ class _SignupPageState extends State<SignupPage> {
                           color: Colors.green,
                           elevation: 7.0,
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () async {
+                              String token = '123';
+                              Navigator.of(context).pop(token);
+
+                            },
                             child: Center(
                               child: Text(
-                                'SIGNUP',
+                                '确定',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -141,31 +99,31 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                         )
                       ),
-                      SizedBox(height: 20.0),
-                      Container(
-                        height: 40.0,
-                        color: Colors.transparent,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Colors.black,
-                                  style: BorderStyle.solid,
-                                  width: 1.0),
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(20.0)),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Center(
-                              child: Text('Go Back',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Montserrat')),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // SizedBox(height: 20.0),
+                      // Container(
+                      //   height: 40.0,
+                      //   color: Colors.transparent,
+                      //   child: Container(
+                      //     decoration: BoxDecoration(
+                      //         border: Border.all(
+                      //             color: Colors.black,
+                      //             style: BorderStyle.solid,
+                      //             width: 1.0),
+                      //         color: Colors.transparent,
+                      //         borderRadius: BorderRadius.circular(20.0)),
+                      //     child: InkWell(
+                      //       onTap: () {
+                      //         Navigator.of(context).pop();
+                      //       },
+                      //       child: Center(
+                      //         child: Text('',
+                      //             style: TextStyle(
+                      //                 fontWeight: FontWeight.bold,
+                      //                 fontFamily: 'Montserrat')),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(height: 40.0),
 
                     ],

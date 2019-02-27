@@ -18,19 +18,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
-  class MyHome extends StatelessWidget { // Wrapper Widget
-    @override
-    Widget build(BuildContext context) {
-      Future.delayed(Duration.zero, () => showAlert(context));
-      return Container(
-        child: Text("Hello world"),
-      );
-    }
-    void showAlert(BuildContext context) {
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                content: Text("hi"),
-              ));
-    }
-  }
+  // class MyHome extends StatelessWidget { // Wrapper Widget
+  //   @override
+  //   Widget build(BuildContext context) {
+  //     Future.delayed(Duration.zero, () => showAlert(context));
+  //     return Container(
+  //       child: Text("Hello world"),
+  //     );
+  //   }
+  //   void showAlert(BuildContext context) {
+  //     showDialog(
+  //         context: context,
+  //         builder: (context) => AlertDialog(
+  //               content: Text("hi"),
+  //             ));
+  //   }
+  // }
