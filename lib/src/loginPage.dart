@@ -98,28 +98,32 @@ class _SignupPageState extends State<SignupPage> {
                         obscureText: true,
                       ),
                       SizedBox(height: 30.0),
-                      Container(
-                        height: 40.0,
-                        child: Material(
-                          borderRadius: BorderRadius.circular(20.0),
-                          shadowColor: Colors.greenAccent,
-                          color: loginStatus=='ing'?Colors.blueGrey:Theme.of(context).primaryColor,
-                          elevation: 7.0,
-                          child: GestureDetector(
-                            onTap: _tapConfirm,
-                            child: Center(
-                              child: Text(
-                                '确定',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Montserrat'
+                      
+                      InkWell(
+                        onTap: _tapConfirm,
+                        child: Container(
+                          height: 40.0,
+                          child: Material(
+                            borderRadius: BorderRadius.circular(20.0),
+                            shadowColor: Colors.greenAccent,
+                            color: loginStatus=='ing'?Colors.blueGrey:Theme.of(context).primaryColor,
+                            elevation: 7.0,
+                            child: GestureDetector(
+                              child: Center(
+                                child: Text(
+                                  '确定',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Montserrat'
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        )
+                          )
+                        ),
                       ),
+                      
                       SizedBox(height: 40.0),
                     ],
                   )
