@@ -16,8 +16,14 @@ class _SignupPageState extends State<SignupPage> {
   String password='';
   String loginStatus='';
   void _tapConfirm() async {
+    setState(() {
+      loginStatus='ing';
+    });
     String token = await login(username,password);
     Navigator.of(context).pop(token);
+    setState(() {
+      loginStatus='';
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -97,7 +103,7 @@ class _SignupPageState extends State<SignupPage> {
                         child: Material(
                           borderRadius: BorderRadius.circular(20.0),
                           shadowColor: Colors.greenAccent,
-                          color: Colors.green,
+                          color: loginStatus=='ing'?Colors.blueGrey:Theme.of(context).primaryColor,
                           elevation: 7.0,
                           child: GestureDetector(
                             onTap: _tapConfirm,
