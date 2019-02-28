@@ -7,7 +7,6 @@ import '../note.dart';
 import '../searchPage/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../loginPage.dart';
-
 class MyHomeState extends State {
   var nameOfApp = "Persist Key Value";
   var counter = 0;
@@ -17,7 +16,6 @@ class MyHomeState extends State {
   void initState() {
     super.initState();
   }
- 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -72,8 +70,6 @@ class IndexPage extends StatefulWidget {
   @override
   createState() => IndexPageState();
 }
-
-
 Widget drawer(context) => Drawer(
   child: ListView(
     padding: EdgeInsets.zero,
@@ -92,8 +88,7 @@ Widget drawer(context) => Drawer(
         // contentPadding:EdgeInsets.zero ,
         //trailing: Icon(Icons.arrow_downward),
       ),
-//            Divider(),
-
+      //Divider(),
       ListTile(
         title: Text("星标笔记"),
         trailing: new Icon(
@@ -113,20 +108,7 @@ Widget drawer(context) => Drawer(
           Icons.settings,
           color: Colors.grey[300],
         ),
-
       ),
-
-      // ListTile(
-      //   title: Text("drawer page"),
-      //   trailing: Icon(Icons.arrow_downward),
-      //   onTap: () {
-      //     // Update the state of the app
-      //     // ...
-      //     // Then close the drawer
-      //     Navigator.pop(context);
-      //   },
-      // ),
-
     ],
   ),
 );
@@ -137,7 +119,6 @@ class IndexPageState extends State<IndexPage> {
   @override
   initState(){
     super.initState();
-    
     if(token=='') {
       Future.delayed(Duration.zero, () async {
         String _token = await routeToLoginPage(context);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'http_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 Future<String> routeToLoginPage(context) async {
   return Navigator.of(context).push(new MaterialPageRoute( //<Null>
     builder: (BuildContext context) {
@@ -16,14 +17,41 @@ class _SignupPageState extends State<SignupPage> {
   String password='';
   String loginStatus='';
   void _tapConfirm() async {
+    if(loginStatus=='ing') return
     setState(() {
       loginStatus='ing';
     });
-    String token = await login(username,password);
-    Navigator.of(context).pop(token);
+    Map rs = await login(username,password);
     setState(() {
       loginStatus='';
     });
+
+    if(rs['status'] == 'error') {
+      Fluttertoast.showToast(
+        msg: "接口出错",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.grey[200],
+        textColor: Colors.black,
+        fontSize: 16.0
+      );
+      return;
+    }
+    if(rs['errorCode'] == 114) {
+      Fluttertoast.showToast(
+        msg: "账号或密码错误",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.grey[200],
+        textColor: Colors.black,
+        fontSize: 16.0
+      );
+      return;
+    }
+    String token = rs['results'];
+    Navigator.of(context).pop(token);    
   }
   @override
   Widget build(BuildContext context) {
@@ -40,7 +68,7 @@ class _SignupPageState extends State<SignupPage> {
                       child: Text(
                         '登录',
                         style: TextStyle(
-                            fontSize: 60.0, fontWeight: FontWeight.bold),
+                          fontSize: 60.0, fontWeight: FontWeight.bold),
                       ),
                     ),
                     Container(
@@ -98,7 +126,6 @@ class _SignupPageState extends State<SignupPage> {
                         obscureText: true,
                       ),
                       SizedBox(height: 30.0),
-                      
                       InkWell(
                         onTap: _tapConfirm,
                         child: Container(
@@ -122,8 +149,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           )
                         ),
-                      ),
-                      
+                      ),                      
                       SizedBox(height: 40.0),
                     ],
                   )

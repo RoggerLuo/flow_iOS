@@ -78,7 +78,7 @@ Future<int> createNote(note) async {
   }
 }
 
-Future<String> login(username,password) async {  
+Future<Map> login(username,password) async {  
   var response = await http.post(
     Uri.encodeFull('$baseUrl/auth/login'),
     body: {"username": username,"password":password},
@@ -86,11 +86,11 @@ Future<String> login(username,password) async {
   ).catchError((e){
     print(e);
   });
-  if(response == null) return '';
+  if(response == null) return {'status':'error'};
   if(response.statusCode == 200) {
     var data = json.decode(response.body);
     return data;
   } else {
-    return '';
+    return {'status':'error'};
   }
 }

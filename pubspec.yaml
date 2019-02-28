@@ -27,7 +27,7 @@ dependencies:
   flutter_slidable: "^0.4.9"
   material_search: ^0.2.8
   shared_preferences: ^0.5.1+1
-  
+  fluttertoast: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
