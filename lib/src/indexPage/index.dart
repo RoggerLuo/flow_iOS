@@ -15,7 +15,6 @@ class IndexPage extends StatefulWidget {
   @override
   createState() => IndexPageState();
 }
-
 class IndexPageState extends State<IndexPage> {
   BuildContext _bodyContext;
   String token = '';
@@ -68,12 +67,12 @@ class IndexPageState extends State<IndexPage> {
         }
       ),
       floatingActionButton: Theme(
-        data: Theme.of(context).copyWith(accentColor: Color(0xff0083F0)),
+        data: Theme.of(context).copyWith(accentColor: Theme.of(context).primaryColor), //Color(0xff0083F0)
         child: new FloatingActionButton(
           onPressed: () async {
             int createTime = DateTime.now().millisecondsSinceEpoch~/1000;
             int modifyTime = createTime;
-            Note _note = Note(content:'',id:-1,createTime:createTime,modifyTime:modifyTime);
+            Note _note = Note(content:'',id:'abc',createTime:createTime,modifyTime:modifyTime);
             String rs = await routeToNew(_bodyContext,note:_note,changeNote:(){});
             if(rs == 'success') {
               ScopedModel.of<IndexModel>(context, rebuildOnChange: true).refreshData();

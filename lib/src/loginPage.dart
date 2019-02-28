@@ -90,12 +90,13 @@ class _SignupPageState extends State<SignupPage> {
                   child: Column(
                     children: <Widget>[
                       SizedBox(height: 10.0),
-                      TextField(
+                      TextField( // 把 字 体 调 大
                         onChanged: (text) {
                           setState((){
                             username = text;
                           });
                         },
+                        style: TextStyle(fontSize: 20,color:Colors.black),
                         decoration: InputDecoration(
                           labelText: ' 账号(Email) ',
                           labelStyle: TextStyle(
@@ -115,6 +116,7 @@ class _SignupPageState extends State<SignupPage> {
                             password = text;
                           });
                         },
+                        style: TextStyle(fontSize: 20,color:Colors.black),
                         decoration: InputDecoration(
                             labelText: ' 密码 ',
                             labelStyle: TextStyle(

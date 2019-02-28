@@ -9,7 +9,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 final _noteFont = const TextStyle(fontSize: 16.0);
 class Note {
   String content;
-  int id;
+  String id;
   int modifyTime;
   int createTime;
   List matchList;
@@ -20,9 +20,9 @@ class Note {
     }
     return Note(
       content: json['content'].trim(),
-      id: json['id'],
-      modifyTime: json['modify_time'],
-      createTime: json['create_time'],
+      id: json['_id'],
+      modifyTime: json['modifyTime'],
+      createTime: json['createTime'],
       matchList: json['match_list']
     );
   }

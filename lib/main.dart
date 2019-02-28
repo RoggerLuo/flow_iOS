@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'FlowApp',
-        theme: new ThemeData(primaryColor: Color(0xFF0083F0), accentColor: Color(0xff0384F0)),
+        theme: new ThemeData(primaryColor: Colors.black , accentColor: Color(0xff0384F0)), //Color(0xFF0083F0)
         home: IndexPage()        
       )
     );

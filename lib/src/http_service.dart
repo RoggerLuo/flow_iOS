@@ -2,30 +2,40 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'note.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 final String baseUrl = "http://rorrc.3322.org:32818/v1";
 // final String baseUrl = "http://0.0.0.0:8999";
 
-int pageSize = 15;
+int pageSize = 10;
 Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
 }
 
 Future<List> getNotes(int start) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+  String token = (prefs.getString('token') ?? ''); 
   var response = await http.get(
-    Uri.encodeFull('$baseUrl/notes?startIndex=${start.toString()}&pageSize=${pageSize.toString()}'),
-    headers: {"Accept": "application/json"}
+    Uri.encodeFull('$baseUrl/note?startIndex=${start.toString()}&pageSize=${pageSize.toString()}'),
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      "token":token
+    }
   ).catchError((e){
     print(e);
   });
   if(response == null) {
-    List<Note> empty= [Note(id:-2,content:'')];
+    List<Note> empty= [];
     return empty;
   }
   if(response.statusCode==200) {
     Map _jsonData = json.decode(response.body);
-    List data = _jsonData['data'];
-    List<Note> notes = data.map((note)=> Note.fromJson(note)).toList(); 
-    return notes;
+    if(_jsonData['status']=='ok') {
+      List data = _jsonData['results']['data'];
+      List<Note> notes = data.map((note)=> Note.fromJson(note)).toList(); 
+      return notes;
+    }
+    return [];
   }else{
     return [];
   }
@@ -44,37 +54,49 @@ Future<List> getSimilar(int noteId) async {
 }
 
 Future<String> modifyNote(note) async {  
+  SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+  String token = (prefs.getString('token') ?? ''); 
+
   var response = await http.post(
     Uri.encodeFull('$baseUrl/note/${note.id}'), 
     body: {"content": note.content},
-    headers: {"content-type": "application/x-www-form-urlencoded"}
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      "token":token
+    }
   ).catchError((e){
     print(e);
   });
   if(response.statusCode==200) {
     Map data = json.decode(response.body);
-    return data['data'];
+    return data['results'];
   } else {
     return 'fail';
   }
 }
 
-Future<int> createNote(note) async {  
+Future<String> createNote(note) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+  String token = (prefs.getString('token') ?? ''); 
+
   var response = await http.post(
     Uri.encodeFull('$baseUrl/note'),
-    body: {"content": note.content,"category_id":"0"},
-    headers: {"content-type": "application/x-www-form-urlencoded"}
+    body: {"content": note.content},
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      "token":token
+    }
   ).catchError((e){
     print(e);
   });
   if(response == null){
-    return -1;
+    return 'error';
   }
   if(response.statusCode == 200) {
     Map data = json.decode(response.body);
-    return data['data']['insert_id'];
+    return 'success';
   } else {
-    return -1;
+    return 'error';
   }
 }
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../note.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import '../http_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 Future<String> routeToNew(context,{Note note,changeNote}) async {
   return Navigator.of(context).push(MaterialPageRoute( //<Null>
     builder: (BuildContext context2) {
@@ -57,18 +59,30 @@ class EditPageState extends State<EditPage> {
       appBar: AppBar(
         title: const Text('编辑'),
         leading : IconButton(icon: Icon(Icons.close), onPressed: () async {
+          
           if(saved){
-            Navigator.pop(context);
+            Navigator.of(context).pop({'type':'notCreate'});
             return ;
           }
+
           if(widget.note.id==-1) {
-            int rs = await createNote(_note);
-            if(rs != -1) {
+            String rs = await createNote(_note);
+            if(rs == 'error') {
+              Fluttertoast.showToast(
+                msg: "新建出错",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                backgroundColor: Colors.grey[200],
+                textColor: Colors.black,
+                fontSize: 16.0
+              );
+            }else{
               saved = true;
               // Navigator.pop(context);
               Navigator.of(context).pop('success');
             }
-            return ;
+            return ; // 新建
           }
           String rs = await modifyNote(widget.note);
           if(rs == 'success') {
