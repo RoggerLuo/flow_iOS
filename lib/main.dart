@@ -12,25 +12,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'FlowApp',
         theme: new ThemeData(primaryColor: Color(0xFF0083F0), accentColor: Color(0xff0384F0)),
-        home: IndexPage(context:context)        
+        home: IndexPage()        
       )
     );
   }
 }
-
-  // class MyHome extends StatelessWidget { // Wrapper Widget
-  //   @override
-  //   Widget build(BuildContext context) {
-  //     Future.delayed(Duration.zero, () => showAlert(context));
-  //     return Container(
-  //       child: Text("Hello world"),
-  //     );
-  //   }
-  //   void showAlert(BuildContext context) {
-  //     showDialog(
-  //         context: context,
-  //         builder: (context) => AlertDialog(
-  //               content: Text("hi"),
-  //             ));
-  //   }
-  // }
