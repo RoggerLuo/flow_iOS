@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'note.dart';
-final String baseUrl = "http://rorrc.3322.org:32818";
+final String baseUrl = "http://rorrc.3322.org:32818/v1";
+// final String baseUrl = "http://0.0.0.0:8999";
+
 int pageSize = 15;
 Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
