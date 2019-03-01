@@ -25,11 +25,9 @@ class EditPage extends StatefulWidget {
     Key key,
     this.note,
     this.changeNote,
-    // this.scaffoldContext
   }) : super(key: key);
   final Note note;
   final changeNote;
-  // final BuildContext scaffoldContext;
   @override
   EditPageState createState() => new EditPageState();
 }
@@ -39,9 +37,45 @@ class EditPageState extends State<EditPage> {
     FocusScope.of(context).requestFocus(_nodeText1);
   }
   final myController = TextEditingController();
-  // var _scaffoldContext; //为了使用snack，必须使用scaffold的context，而不是更上层的
   Note _note;
   bool saved = true;
+  void _goBack() async {
+    if(_note.content==''){ // 如果没有编辑就退出
+      Navigator.of(context).pop({'type':'notCreate'});
+      return;
+    }
+    if(saved){
+      Navigator.of(context).pop({'type':'notCreate'});
+      return ;
+    }
+    if(widget.note.id=='_new') { //判断是新建还是编辑
+      String rs = await createNote(_note);
+      if(rs == 'error') {
+        Fluttertoast.showToast(
+          msg: "新建出错",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.grey[200],
+          textColor: Colors.black,
+          fontSize: 16.0
+        );
+      }else{
+        saved = true;
+        // Navigator.pop(context);
+        Navigator.of(context).pop('success');
+      }
+      return ; // 新建
+    }else{
+      String rs = await modifyNote(widget.note);
+      if(rs == 'ok') {
+        saved = true;
+        Navigator.of(context).pop(rs);
+      }
+    }
+
+        
+  }
   @override
   void dispose() {
     myController.dispose();
@@ -58,38 +92,10 @@ class EditPageState extends State<EditPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('编辑'),
-        leading : IconButton(icon: Icon(Icons.close), onPressed: () async {
-          
-          if(saved){
-            Navigator.of(context).pop({'type':'notCreate'});
-            return ;
-          }
-
-          if(widget.note.id==-1) {
-            String rs = await createNote(_note);
-            if(rs == 'error') {
-              Fluttertoast.showToast(
-                msg: "新建出错",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                timeInSecForIos: 1,
-                backgroundColor: Colors.grey[200],
-                textColor: Colors.black,
-                fontSize: 16.0
-              );
-            }else{
-              saved = true;
-              // Navigator.pop(context);
-              Navigator.of(context).pop('success');
-            }
-            return ; // 新建
-          }
-          String rs = await modifyNote(widget.note);
-          if(rs == 'success') {
-            saved = true;
-            Navigator.of(context).pop(rs);
-          }
-        }),
+        leading : IconButton(
+          icon: Icon(Icons.close), 
+          onPressed: _goBack,
+        ),
         actions: [
           FlatButton(
             onPressed: () {

@@ -61,14 +61,12 @@ class IndexPageState extends State<IndexPage> {
     setState(() {
       token = (prefs.getString(key) ?? ''); // Get value
     });
-    // token = (prefs.getString(key) ?? ''); // Get value
     if(token=='') {
       Future.delayed(Duration.zero, () async {
         String _token = await routeToLoginPage(context);
         setState((){
           token = _token;
         });
-        // SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
         prefs.setString(key, token); // Save Value
       });
     }
@@ -83,7 +81,7 @@ class IndexPageState extends State<IndexPage> {
     int createTime = DateTime.now().millisecondsSinceEpoch~/1000;
     int modifyTime = createTime;
 
-    Note _note = Note(content:'',id:'abc',createTime:createTime,modifyTime:modifyTime);
+    Note _note = Note(content:'',id:'_new',createTime:createTime,modifyTime:modifyTime);
     String rs = await routeToNew(_bodyContext,note:_note,changeNote:(){});
     
     if(rs == 'success') {
@@ -98,5 +96,6 @@ class IndexPageState extends State<IndexPage> {
 
       );
     }
+
   }
 }  

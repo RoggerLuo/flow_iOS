@@ -15,6 +15,7 @@ Future sleep(int _milliseconds) {
 Future<List> getNotes(int start) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 
+  if(token=='') return [];
   var response = await http.get(
     Uri.encodeFull('$baseUrl/note?startIndex=${start.toString()}&pageSize=${pageSize.toString()}'),
     headers: {
@@ -42,21 +43,26 @@ Future<List> getNotes(int start) async {
 }
 
 Future<List> getSimilar(String noteId) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+  String token = (prefs.getString('token') ?? ''); 
   var response = await http.get(
-      Uri.encodeFull('$baseUrl/getSimilar/$noteId'),
-      headers: {"Accept": "application/json"}
+    Uri.encodeFull('$baseUrl/similar/$noteId'),
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      "token":token
+    }
   ).catchError((e){
     print(e);
   });
-  List data = json.decode(response.body);
-  List<Note> notes = data.map((note)=> Note.fromJson(note)).toList(); 
+  Map data = json.decode(response.body);
+  List results = data['results'];
+  List<Note> notes = results.map((note)=> Note.fromJson(note)).toList(); 
   return notes;
 }
 
 Future<String> modifyNote(note) async {  
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 
-
   var response = await http.post(
     Uri.encodeFull('$baseUrl/note/${note.id}'), 
     body: {"content": note.content},

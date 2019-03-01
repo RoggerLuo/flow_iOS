@@ -19,15 +19,15 @@ var buildMainList = () => ScopedModelDescendant<IndexModel>(
       itemCount: model.notes.length + 1,
       itemBuilder: (context, index) {
         if(model.notes.length == 0){ // init data
-          //model.getMoreData(startIdx:0);
+          model.getMoreData(startIdx:0);
         }
         if (index == model.notes.length) {
           return buildProgressIndicator(model.isPerformingRequest);
         } else {
-          if(model.notes.length ==1 && model.notes[0].id == -2){
-            return Text('网络连接错误');
-          }
           return buildNoteRow(model.notes[index],context,index);
+          // if(model.notes.length ==1 && model.notes[0].id == -2){
+          //   return Text('网络连接错误');
+          // }
         }
       }
     )

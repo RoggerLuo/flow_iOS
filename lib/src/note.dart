@@ -114,14 +114,14 @@ Widget buildNoteRow(Note note,BuildContext context,int index) {
 }
 String convertToDetailTime(Note note){
   var format = new DateFormat('yyyy-MM-dd HH:mm a');
-  var date = new DateTime.fromMillisecondsSinceEpoch(note.modifyTime * 1000);
+  var date = new DateTime.fromMillisecondsSinceEpoch(note.modifyTime);
   String time = format.format(date);
   return time;
 }
 String convertTime(Note note){
   var now = new DateTime.now();
   var format = new DateFormat('HH:mm a');
-  var date = new DateTime.fromMillisecondsSinceEpoch(note.modifyTime * 1000);
+  var date = new DateTime.fromMillisecondsSinceEpoch(note.modifyTime);
   var diff = now.difference(date);
   var time = '';
   if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
