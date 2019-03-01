@@ -86,7 +86,7 @@ class DetailPageState extends State<DetailPage> {
     )).toList();
     _tagsWidget = getSelectableTags(tagList);
   }
-  void getSimilarList(int noteId) async {    
+  void getSimilarList(String noteId) async {    
     setState(() {
       _notes = [];
       _isPerformingRequest = true;

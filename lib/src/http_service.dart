@@ -41,7 +41,7 @@ Future<List> getNotes(int start) async {
   }
 }
 
-Future<List> getSimilar(int noteId) async {
+Future<List> getSimilar(String noteId) async {
   var response = await http.get(
       Uri.encodeFull('$baseUrl/getSimilar/$noteId'),
       headers: {"Accept": "application/json"}

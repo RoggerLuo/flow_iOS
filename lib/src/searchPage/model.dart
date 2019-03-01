@@ -7,7 +7,7 @@ class DetailModel extends Model {
   bool _isPerformingRequest = false;
   bool get isPerformingRequest => _isPerformingRequest;
 }
-Future<List> getSimilarList(int noteId) async {    
+Future<List> getSimilarList(String noteId) async {    
     return await getSimilar(noteId);
     // List _notes = [];
     // print('get similar request...');

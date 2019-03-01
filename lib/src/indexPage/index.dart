@@ -19,23 +19,6 @@ class IndexPageState extends State<IndexPage> {
   BuildContext _bodyContext;
   String token = '';
   String key = 'token';
-  void _login() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
-    setState(() {
-      token = (prefs.getString(key) ?? ''); // Get value
-    });
-    // token = (prefs.getString(key) ?? ''); // Get value
-    if(token=='') {
-      Future.delayed(Duration.zero, () async {
-        String _token = await routeToLoginPage(context);
-        setState((){
-          token = _token;
-        });
-        // SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
-        prefs.setString(key, token); // Save Value
-      });
-    }
-  }
   @override
   initState() {
     super.initState();
@@ -57,9 +40,7 @@ class IndexPageState extends State<IndexPage> {
       body: Builder( // 使用builder是为了暴露出context
         builder: (context) {
           _bodyContext = context;
-          if(token==''){
-            return Text('');
-          }
+          if(token=='') return Text('');
           return Container(
             color: Colors.white,
             child: buildMainList(),            
@@ -69,31 +50,53 @@ class IndexPageState extends State<IndexPage> {
       floatingActionButton: Theme(
         data: Theme.of(context).copyWith(accentColor: Theme.of(context).primaryColor), //Color(0xff0083F0)
         child: new FloatingActionButton(
-          onPressed: () async {
-            int createTime = DateTime.now().millisecondsSinceEpoch~/1000;
-            int modifyTime = createTime;
-            Note _note = Note(content:'',id:'abc',createTime:createTime,modifyTime:modifyTime);
-            String rs = await routeToNew(_bodyContext,note:_note,changeNote:(){});
-            if(rs == 'success') {
-              ScopedModel.of<IndexModel>(context, rebuildOnChange: true).refreshData();
-              await sleep(300);
-              Scaffold.of(_bodyContext).showSnackBar(
-                SnackBar(
-                  content: Text("新建笔记保存成功"),
-                  backgroundColor:Colors.lightGreen
-                )
-              );
-            }
-          },
+          onPressed: _pressFloatButton,
           child: new Icon(Icons.add),
         ),
       ),
     );
+  }
+  void _login() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+    setState(() {
+      token = (prefs.getString(key) ?? ''); // Get value
+    });
+    // token = (prefs.getString(key) ?? ''); // Get value
+    if(token=='') {
+      Future.delayed(Duration.zero, () async {
+        String _token = await routeToLoginPage(context);
+        setState((){
+          token = _token;
+        });
+        // SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+        prefs.setString(key, token); // Save Value
+      });
+    }
   }
   void _openDrawer(){
     Scaffold.of(_bodyContext).openDrawer();
   }
   void _refreshNotesButton() {
     ScopedModel.of<IndexModel>(context, rebuildOnChange: true).refreshData();
+  }
+  void _pressFloatButton() async {
+    int createTime = DateTime.now().millisecondsSinceEpoch~/1000;
+    int modifyTime = createTime;
+
+    Note _note = Note(content:'',id:'abc',createTime:createTime,modifyTime:modifyTime);
+    String rs = await routeToNew(_bodyContext,note:_note,changeNote:(){});
+    
+    if(rs == 'success') {
+      ScopedModel.of<IndexModel>(context, rebuildOnChange: true).refreshData();
+      await sleep(300);
+      Scaffold.of(_bodyContext).showSnackBar(
+        
+        SnackBar(
+          content: Text("新建笔记保存成功"),
+          backgroundColor:Colors.lightGreen
+        )
+
+      );
+    }
   }
 }  
