@@ -7,26 +7,6 @@ import 'dialog.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 final _noteFont = const TextStyle(fontSize: 16.0);
-class Note {
-  String content;
-  String id;
-  int modifyTime;
-  int createTime;
-  List matchList;
-  Note({this.matchList, this.content, this.id, this.modifyTime, this.createTime});
-  factory Note.fromJson(Map<String, dynamic> json) {
-    if(json['match_list']==null) {
-      json['match_list'] = [];
-    }
-    return Note(
-      content: json['content'].trim(),
-      id: json['_id'],
-      modifyTime: json['modifyTime'],
-      createTime: json['createTime'],
-      matchList: json['match_list']
-    );
-  }
-}
 
 Widget buildNoteRow(Note note,BuildContext context,int index) {
   void _showSnackBar(String abc){
@@ -92,25 +72,6 @@ Widget buildNoteRow(Note note,BuildContext context,int index) {
       ),
     ],
   );
-  // return Dismissible(
-  //   key: Key(note.id.toString()),
-  //   onDismissed: (direction) async {
-  //     ConfirmAction rs = await confirmDialog(context);
-  //     if(rs == ConfirmAction.ACCEPT) {
-  //       ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
-  //       Scaffold.of(context).showSnackBar(SnackBar(content: Text("dismissed")));
-  //     }
-  //   },
-    // Show a red background as the item is swiped away
-    // background: Container(color: Colors.red),
-    // child: ListTile(
-      // title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
-      // subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
-      // onTap: () {
-      //   routeToDetail(context,note:note);
-      // },
-  //   )
-  // );
 }
 String convertToDetailTime(Note note){
   var format = new DateFormat('yyyy-MM-dd HH:mm a');
@@ -140,4 +101,25 @@ String convertTime(Note note){
     }
   }
   return time;
+}
+
+class Note {
+  String content;
+  String id;
+  int modifyTime;
+  int createTime;
+  List matchList;
+  Note({this.matchList, this.content, this.id, this.modifyTime, this.createTime});
+  factory Note.fromJson(Map<String, dynamic> json) {
+    if(json['match_list']==null) {
+      json['match_list'] = [];
+    }
+    return Note(
+      content: json['content'].trim(),
+      id: json['_id'],
+      modifyTime: json['modifyTime'],
+      createTime: json['createTime'],
+      matchList: json['match_list']
+    );
+  }
 }

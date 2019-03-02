@@ -19,24 +19,20 @@ class IndexPageState extends State<IndexPage> {
   BuildContext _bodyContext;
   String token = '';
   String key = 'token';
+
   @override
   initState() {
     super.initState();
     _login();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: drawer(context),
-      appBar: AppBar(
-        centerTitle: true,
-        title: new Text('Flow'),
-        leading : IconButton(icon: Icon(Icons.list), onPressed: _openDrawer),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.search), onPressed:()=>routeToSearch(_bodyContext)),
-          IconButton(icon: Icon(Icons.refresh), onPressed: _refreshNotesButton)
-        ],
-      ),
+      
+      
+      
       body: Builder( // 使用builder是为了暴露出context
         builder: (context) {
           _bodyContext = context;
@@ -47,6 +43,7 @@ class IndexPageState extends State<IndexPage> {
           );
         }
       ),
+      
       floatingActionButton: Theme(
         data: Theme.of(context).copyWith(accentColor: Theme.of(context).primaryColor), //Color(0xff0083F0)
         child: new FloatingActionButton(
@@ -54,8 +51,19 @@ class IndexPageState extends State<IndexPage> {
           child: new Icon(Icons.add),
         ),
       ),
+
+      appBar: AppBar(
+        centerTitle: true,
+        title: new Text('Flow'),
+        leading : IconButton(icon: Icon(Icons.list), onPressed: _openDrawer),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.search), onPressed:()=>routeToSearch(_bodyContext)),
+          IconButton(icon: Icon(Icons.refresh), onPressed: _refreshNotesButton)
+        ],
+      ),
     );
   }
+
   void _login() async {
     SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
     setState(() {
@@ -74,9 +82,12 @@ class IndexPageState extends State<IndexPage> {
   void _openDrawer(){
     Scaffold.of(_bodyContext).openDrawer();
   }
+  
   void _refreshNotesButton() {
     ScopedModel.of<IndexModel>(context, rebuildOnChange: true).refreshData();
   }
+  
+  // 首页的加号圆形按钮
   void _pressFloatButton() async {
     int createTime = DateTime.now().millisecondsSinceEpoch~/1000;
     int modifyTime = createTime;
