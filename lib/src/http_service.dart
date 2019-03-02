@@ -5,7 +5,7 @@ import 'note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final String baseUrl = "http://rorrc.3322.org:32818/v1";
-// final String baseUrl = "http://0.0.0.0:8999";
+// final String baseUrl = "http://0.0.0.0:8999/v1";
 
 int pageSize = 10;
 Future sleep(int _milliseconds) {

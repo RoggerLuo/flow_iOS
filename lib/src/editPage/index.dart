@@ -40,15 +40,15 @@ class EditPageState extends State<EditPage> {
   Note _note;
   bool saved = true;
   void _goBack() async {
-    if(_note.content==''){ // 如果没有编辑就退出
-      Navigator.of(context).pop({'type':'notCreate'});
-      return;
-    }
     if(saved){
-      Navigator.of(context).pop({'type':'notCreate'});
+      Navigator.of(context).pop('no changes happen');
       return ;
     }
     if(widget.note.id=='_new') { //判断是新建还是编辑
+      if(_note.content==''){ // 新建的情况下 如果没有编辑就退出
+        Navigator.of(context).pop('no changes happen');
+        return;
+      }
       String rs = await createNote(_note);
       if(rs == 'error') {
         Fluttertoast.showToast(
@@ -62,18 +62,15 @@ class EditPageState extends State<EditPage> {
         );
       }else{
         saved = true;
-        // Navigator.pop(context);
-        Navigator.of(context).pop('success');
+        Navigator.of(context).pop('ok');
       }
-      return ; // 新建
-    }else{
+    }else{ // edit
       String rs = await modifyNote(widget.note);
       if(rs == 'ok') {
         saved = true;
-        Navigator.of(context).pop(rs);
+        Navigator.of(context).pop('ok');
       }
     }
-
         
   }
   @override
@@ -99,26 +96,19 @@ class EditPageState extends State<EditPage> {
         ),
         
         actions: [
-          FlatButton(
-            onPressed: () {
-              return ;
-              // if(_buttonText==''){
-              //   return ;
-              // }
-              // widget.changeNote(myController.text);
-              // setState((){
-              //   _buttonText = '';
-              // });
-            },
-            child: Text(
-              '',//'保存',
-              style: Theme
-                .of(context)
-                .textTheme
-                .subhead
-                .copyWith(color: Colors.white)
-            )
-          ),
+          // FlatButton(
+          //   onPressed: () {
+          //     return ;
+          //   },
+          //   child: Text(
+          //     '',//'保存',
+          //     style: Theme
+          //       .of(context)
+          //       .textTheme
+          //       .subhead
+          //       .copyWith(color: Colors.white)
+          //   )
+          // ),
         ],
       ),
       body: Builder( // 使用builder是为了暴露出context

@@ -10,7 +10,7 @@ Future sleep(int _milliseconds) {
 void routeToDetail(context,{Note note}) {
   Navigator.of(context).push(new MaterialPageRoute( //<Null>
     builder: (BuildContext context) {
-      return new DetailPage(note:note);
+      return DetailPage(note:note);
     }
   ));
 }
@@ -31,7 +31,19 @@ class DetailPageState extends State<DetailPage> {
   List<Note> _filtered_notes = [];
   Note _note;
   BuildContext _scaffoldContext;
-  
+  void _toggleStar() async {
+    String res;
+    if(_note.starred==true){
+      res = await unstarNote(_note);
+    }else{
+      res = await starNote(_note);
+    }
+    if(res == 'ok') {
+      setState(() {
+        _note.starred = !_note.starred;
+      });
+    }
+  }
   @override
   initState(){
     super.initState();
@@ -57,7 +69,7 @@ class DetailPageState extends State<DetailPage> {
               Icons.star ,
               color: _note.starred == true ? Colors.white : Color(0xFF4F4F4F),          
             ), 
-            onPressed:()=>{}
+            onPressed:_toggleStar
           ),
           
           FlatButton(
@@ -119,7 +131,7 @@ class DetailPageState extends State<DetailPage> {
               Container( 
                 color:Colors.white,
                 child: Padding(
-                  padding: EdgeInsets.all(14.0),
+                  padding: EdgeInsets.all(0.0),
                   child: Column(
                     children: noteList
                   )
@@ -145,8 +157,8 @@ class DetailPageState extends State<DetailPage> {
   }
   void _pressEditButton() async {
     String rs = await routeToEdit(_scaffoldContext,note:widget.note,changeNote:changeNote); //changeNote
-    if(rs == 'success') {
-      await sleep(300);
+    if(rs == 'ok') {
+      await sleep(400);
       Scaffold.of(_scaffoldContext).showSnackBar(
         SnackBar(
           content: Text("保存成功"),
@@ -172,7 +184,7 @@ class DetailPageState extends State<DetailPage> {
     });
     print('get similar request...');
     List<Note> notes = await getSimilar(noteId);
-    notes.removeAt(0);
+    // notes.removeAt(0);
     handleKeywords(notes);
     setState(() {
       _notes.addAll(notes);

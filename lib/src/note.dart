@@ -52,14 +52,25 @@ Widget buildNoteRow(Note note,BuildContext context,int index,{String from}) {
         
         title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:TextStyle(fontSize: 16.0)),
         subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
-        trailing: from=='detailPage'?null:IconButton(
-          iconSize: 25,
-          icon: Icon(
-            Icons.star ,
-            color: note.starred == true ? Colors.yellow : Colors.grey[100],          
+        trailing: from=='detailPage'?
+          IconButton(
+            iconSize: 25,
+            icon: Icon(
+              Icons.star,
+              color: note.starred == true ? Colors.yellow : Colors.white,//grey[100],
+              // note.starred == true ? Icons.star :Icons.star_border,
+            ),
+            onPressed: (){},
+          ):
+          IconButton(
+            iconSize: 25,
+            icon: Icon(
+              Icons.star,
+              color: note.starred == true ? Colors.yellow : Colors.grey[100],
+              // note.starred == true ? Icons.star :Icons.star_border,
+            ),
+            onPressed: _toggleStar
           ),
-          onPressed: _toggleStar
-        ),
         onTap: () {
           routeToDetail(context,note:note);
         },
@@ -95,7 +106,6 @@ Widget buildNoteRow(Note note,BuildContext context,int index,{String from}) {
       ),
     ],
   );
-  
 }
 
 String convertToDetailTime(Note note){

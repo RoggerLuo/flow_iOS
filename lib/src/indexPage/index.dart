@@ -32,7 +32,6 @@ class IndexPageState extends State<IndexPage> {
       drawer: drawer(context),
       
       
-      
       body: Builder( // 使用builder是为了暴露出context
         builder: (context) {
           _bodyContext = context;
@@ -95,18 +94,17 @@ class IndexPageState extends State<IndexPage> {
     Note _note = Note(content:'',id:'_new',createTime:createTime,modifyTime:modifyTime);
     String rs = await routeToNew(_bodyContext,note:_note,changeNote:(){});
     
-    if(rs == 'success') {
-      ScopedModel.of<IndexModel>(context, rebuildOnChange: true).refreshData();
-      await sleep(300);
+    if(rs == 'ok') {
+
+      ScopedModel.of<IndexModel>(context, rebuildOnChange: true).refreshData();     
+      await sleep(400); // 等编辑框完全退出屏幕
+
       Scaffold.of(_bodyContext).showSnackBar(
-        
         SnackBar(
           content: Text("新建笔记保存成功"),
           backgroundColor:Colors.lightGreen
         )
-
       );
     }
-
   }
 }  

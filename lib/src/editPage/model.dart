@@ -7,12 +7,12 @@ class DetailModel extends Model {
   bool _isPerformingRequest = false;
   bool get isPerformingRequest => _isPerformingRequest;
 }
-Future<List> getSimilarList(String noteId) async {    
-    return await getSimilar(noteId);
-    // List _notes = [];
-    // print('get similar request...');
-    // List<Note> notes = await getSimilar(noteId);//(_notes.length, _notes.length + 10);
-    // _notes.addAll(notes);
-    // return _notes;
-    // notifyListeners();
-}
+// Future<List> getSimilarList(String noteId) async {    
+//     return await getSimilar(noteId);
+//     // List _notes = [];
+//     // print('get similar request...');
+//     // List<Note> notes = await getSimilar(noteId);//(_notes.length, _notes.length + 10);
+//     // _notes.addAll(notes);
+//     // return _notes;
+//     // notifyListeners();
+// }
