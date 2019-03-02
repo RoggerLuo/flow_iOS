@@ -12,6 +12,47 @@ Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
 }
 
+
+Future<String> unstarNote(note) async {  
+  SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+  String token = (prefs.getString('token') ?? ''); 
+  var response = await http.delete(
+    Uri.encodeFull('$baseUrl/note-star/${note.id}'), 
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      "token":token
+    }
+  ).catchError((e){
+    print(e);
+  });
+  if(response.statusCode==200) {
+    Map data = json.decode(response.body);
+    return data['results'];
+  } else {
+    return 'fail';
+  }
+}
+
+Future<String> starNote(note) async {  
+  SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+  String token = (prefs.getString('token') ?? ''); 
+  var response = await http.post(
+    Uri.encodeFull('$baseUrl/note-star/${note.id}'), 
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      "token":token
+    }
+  ).catchError((e){
+    print(e);
+  });
+  if(response.statusCode==200) {
+    Map data = json.decode(response.body);
+    return data['results'];
+  } else {
+    return 'fail';
+  }
+}
+
 Future<List> getNotes(int start) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 
@@ -60,12 +101,33 @@ Future<List> getSimilar(String noteId) async {
   return notes;
 }
 
+
 Future<String> modifyNote(note) async {  
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 
   var response = await http.post(
     Uri.encodeFull('$baseUrl/note/${note.id}'), 
     body: {"content": note.content},
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      "token":token
+    }
+  ).catchError((e){
+    print(e);
+  });
+  if(response.statusCode==200) {
+    Map data = json.decode(response.body);
+    return data['results'];
+  } else {
+    return 'fail';
+  }
+
+}
+Future<String> deleteNote(note) async {  
+  SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+  String token = (prefs.getString('token') ?? ''); 
+  var response = await http.delete(
+    Uri.encodeFull('$baseUrl/note/${note.id}'), 
     headers: {
       "content-type": "application/x-www-form-urlencoded",
       "token":token

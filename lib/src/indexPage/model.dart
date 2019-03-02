@@ -10,6 +10,11 @@ class IndexModel extends Model {
   //   await _getMoreData(1);
   //   notifyListeners();
   // }
+  void toggleStar(int index){
+    _notes[index].starred = !_notes[index].starred; 
+    notifyListeners();
+  }
+
   Future sleep(int _milliseconds) {
     return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
   }
@@ -42,8 +47,5 @@ class IndexModel extends Model {
       notifyListeners();
       print('onScrollBottom...');
     }
-  }
-  void markNote(){
-    
   }
 }

@@ -1,8 +1,7 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'src/indexPage/model.dart';
+import '../src/indexPage/model.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'src/indexPage/mainList.dart';
 
 void main() => runApp(new MyApp());
 class MyApp extends StatelessWidget {
@@ -93,10 +92,16 @@ class RandomWordsState extends State<RandomWords> {
         pair.asPascalCase,
         style: _biggerFont,
       ),
-      trailing: new Icon(
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red : null,
+      trailing: IconButton(
+        icon: new Icon(
+          alreadySaved ? Icons.favorite : Icons.favorite_border,
+          color: alreadySaved ? Colors.red : null,
+        ),
+        onPressed: (){
+          print('star');
+        },
       ),
+      
       onTap: () {
         setState(() {
           if (alreadySaved) {

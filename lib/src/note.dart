@@ -5,14 +5,52 @@ import 'package:scoped_model/scoped_model.dart';
 import 'indexPage/model.dart';
 import 'dialog.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'http_service.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 final _noteFont = const TextStyle(fontSize: 16.0);
 
 Widget buildNoteRow(Note note,BuildContext context,int index) {
-  void _showSnackBar(String abc){
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text("dismissed")));
+  void _toggleStar() async {
+    String res;
+    if(note.starred==true){
+      res = await unstarNote(note);
+    }else{
+      res = await starNote(note);
+    }
+    if(res == 'ok') {
+      ScopedModel.of<IndexModel>(context, rebuildOnChange: true).toggleStar(index);
+    }
   }
-  final alreadySaved = false;//_saved.contains(pair);
+  void _deleteNote() async {
+    // 弹出dialog问是否删除
+    ConfirmAction rs = await confirmDialog(context,note.content);
+    if(rs == ConfirmAction.ACCEPT) {
+      String res = await deleteNote(note);
+      if(res == 'ok') {
+        ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("删除成功"),
+          backgroundColor:Colors.lightGreen
+        ));
+      }else{
+        Fluttertoast.showToast(
+          msg: "删除出错",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.grey[200],
+          textColor: Colors.black,
+          fontSize: 16.0
+        );
+      }
+    }
+  }
+
+  // void _showSnackBar(String abc){
+  //   Scaffold.of(context).showSnackBar(SnackBar(content: Text("dismissed")));
+  // }
+
   return new Slidable(
     delegate: new SlidableDrawerDelegate(),
     actionExtentRatio: 0.25,
@@ -22,13 +60,17 @@ Widget buildNoteRow(Note note,BuildContext context,int index) {
         
         title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
         subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
-        trailing: new Icon(
-          Icons.star ,
-          color: alreadySaved ? Colors.yellow : Colors.grey[100],
+        trailing: IconButton(
+          iconSize: 26,
+          icon: new Icon(
+            Icons.star ,
+            color: note.starred == true ? Colors.yellow : Colors.grey[100],          
+          ),
+          onPressed: _toggleStar
         ),
         onTap: () {
-        routeToDetail(context,note:note);
-      },
+          routeToDetail(context,note:note);
+        },
 
       ),
     ),
@@ -47,28 +89,17 @@ Widget buildNoteRow(Note note,BuildContext context,int index) {
       // ),
     ],
     secondaryActions: <Widget>[
-      new IconSlideAction(
-        caption: 'More',
-        color: Colors.black45,
-        icon: Icons.more_horiz,
-        onTap: () => _showSnackBar('More'),
-      ),
+      // new IconSlideAction(
+      //   caption: 'More',
+      //   color: Colors.black45,
+      //   icon: Icons.more_horiz,
+      //   onTap: () => _showSnackBar('More'),
+      // ),
       new IconSlideAction(
         caption: '删除',
         color: Colors.red,
         icon: Icons.delete,
-        onTap: () async {
-          // _showSnackBar('Delete');
-          ConfirmAction rs = await confirmDialog(context,note.content);
-          if(rs == ConfirmAction.ACCEPT) {
-            ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text("已删除"),
-              backgroundColor:Colors.lightGreen
-            ));
-          }
-
-        },
+        onTap: _deleteNote
       ),
     ],
   );
@@ -109,17 +140,22 @@ class Note {
   int modifyTime;
   int createTime;
   List matchList;
-  Note({this.matchList, this.content, this.id, this.modifyTime, this.createTime});
+  bool starred;
+  Note({this.matchList, this.content, this.id, this.modifyTime, this.createTime,this.starred});
+  
   factory Note.fromJson(Map<String, dynamic> json) {
+    
     if(json['match_list']==null) {
       json['match_list'] = [];
     }
+    
     return Note(
       content: json['content'].trim(),
       id: json['_id'],
       modifyTime: json['modifyTime'],
       createTime: json['createTime'],
-      matchList: json['match_list']
+      matchList: json['match_list'],
+      starred: json['starred']
     );
   }
 }
