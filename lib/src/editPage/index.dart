@@ -92,10 +92,12 @@ class EditPageState extends State<EditPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('编辑'),
+        
         leading : IconButton(
           icon: Icon(Icons.close), 
           onPressed: _goBack,
         ),
+        
         actions: [
           FlatButton(
             onPressed: () {

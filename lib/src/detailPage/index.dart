@@ -31,6 +31,160 @@ class DetailPageState extends State<DetailPage> {
   List<Note> _filtered_notes = [];
   Note _note;
   BuildContext _scaffoldContext;
+  
+  @override
+  initState(){
+    super.initState();
+    _note = widget.note;
+    getSimilarList(widget.note.id);
+  }
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> noteList = [];
+
+    for (var x = 0; x < _filtered_notes.length; x++) {
+      noteList.add(Divider(height: 0.0));
+      noteList.add(buildNoteRow(_filtered_notes[x],context,x,from:'detailPage'));
+    }
+    noteList.add(Divider(height: 0.0));
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(''),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.star ,
+              color: _note.starred == true ? Colors.white : Color(0xFF4F4F4F),          
+            ), 
+            onPressed:()=>{}
+          ),
+          
+          FlatButton(
+            onPressed: _pressEditButton,
+            child: Text('编辑',style: Theme.of(context).textTheme.subhead.copyWith(color: Colors.white))
+          ),
+
+        ],
+      ),
+      body: Builder( // 使用builder是为了暴露出context
+        builder: (context) {
+          _scaffoldContext = context;
+
+          return ListView(
+            children: <Widget>[
+              // 笔记正文
+              Container( // note content
+                // constraints:BoxConstraints(minHeight:100),
+                color:Colors.white,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 28, 16, 0), //all(16.0),
+                  child: Text(widget.note.content,style:TextStyle(fontSize: 17.0))
+                )
+              ),
+              // 笔记修改时间
+              Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 0), //all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children:<Widget>[
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 18, 0, 30), //all(16.0),
+                        child: Text(convertToDetailTime(widget.note),style:TextStyle(fontSize: 14.0,color: Colors.grey))
+                      ),
+                  ]),
+                ),
+              ),
+              // 分隔组件
+              Container(
+                color:Colors.grey[200],
+                constraints:BoxConstraints(minHeight:2),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(14, 2, 0, 2), //all(16.0),
+                  child: Text('包含相同关键词的笔记',style:TextStyle(fontSize: 14.0,fontWeight:FontWeight.normal,color:Colors.grey)),
+                )
+              ),
+              // 标签组
+              Container(
+                color:Colors.white,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(14, 14, 14, 4), //all(16.0),
+                  child: _tagsWidget
+                )
+              ),
+              // 相似笔记列表          
+              Container( 
+                color:Colors.white,
+                child: Padding(
+                  padding: EdgeInsets.all(14.0),
+                  child: Column(
+                    children: noteList
+                  )
+                )
+              ),
+              Container(
+                color:Colors.white,
+                child: Padding(
+                  padding: EdgeInsets.all(0.0),
+                  child: buildProgressIndicator(_isPerformingRequest)
+                )
+              ),
+              Container( // placeholder
+                color:Colors.white,
+                constraints:BoxConstraints(minHeight:200),
+                child: Text('')
+              ),
+            ]
+          ); 
+        }
+      )          
+    );
+  }
+  void _pressEditButton() async {
+    String rs = await routeToEdit(_scaffoldContext,note:widget.note,changeNote:changeNote); //changeNote
+    if(rs == 'success') {
+      await sleep(300);
+      Scaffold.of(_scaffoldContext).showSnackBar(
+        SnackBar(
+          content: Text("保存成功"),
+          backgroundColor:Colors.lightGreen
+        )
+      );
+    }
+  }
+  void handleKeywords(List notes){
+    Set keywordsSet = Set();
+    notes.forEach((note)=>note.matchList.forEach((word)=>keywordsSet.add(word)));
+    List keywordsList = keywordsSet.toList();
+    List<Tag> tagList = keywordsList.map((el)=>Tag(
+      title: el, 
+      active: false
+    )).toList();
+    _tagsWidget = getSelectableTags(tagList);
+  }
+  void getSimilarList(String noteId) async {    
+    setState(() {
+      _notes = [];
+      _isPerformingRequest = true;
+    });
+    print('get similar request...');
+    List<Note> notes = await getSimilar(noteId);
+    notes.removeAt(0);
+    handleKeywords(notes);
+    setState(() {
+      _notes.addAll(notes);
+      _filtered_notes = _notes;
+      _isPerformingRequest = false;
+    });
+  }
+  void changeNote(content){
+    setState(() {
+      _note.content = content;
+    });
+  }
   Widget getSelectableTags(_tags){
     return SelectableTags(
       borderSide: BorderSide(width: 1.0, color: Colors.grey[300]),
@@ -74,164 +228,6 @@ class DetailPageState extends State<DetailPage> {
           }
         }
       },
-    );
-  }
-  void handleKeywords(List notes){
-    Set keywordsSet = Set();
-    notes.forEach((note)=>note.matchList.forEach((word)=>keywordsSet.add(word)));
-    List keywordsList = keywordsSet.toList();
-    List<Tag> tagList = keywordsList.map((el)=>Tag(
-      title: el, 
-      active: false
-    )).toList();
-    _tagsWidget = getSelectableTags(tagList);
-  }
-  void getSimilarList(String noteId) async {    
-    setState(() {
-      _notes = [];
-      _isPerformingRequest = true;
-    });
-    print('get similar request...');
-    List<Note> notes = await getSimilar(noteId);
-    notes.removeAt(0);
-    handleKeywords(notes);
-    setState(() {
-      _notes.addAll(notes);
-      _filtered_notes = _notes;
-      _isPerformingRequest = false;
-    });
-  }
-  void changeNote(content){
-    setState(() {
-      _note.content = content;
-    });
-  }
-  @override
-  initState(){
-    super.initState();
-    _note = widget.note;
-    getSimilarList(widget.note.id);
-  }
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> noteList = [];
-    for (var x = 0; x < _filtered_notes.length; x++) {
-      noteList.add(Divider(height: 0.0));
-      noteList.add(buildNoteRow(_filtered_notes[x],context,x));
-    }
-    noteList.add(Divider(height: 0.0));
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        actions: [
-          FlatButton(
-            onPressed: () async {
-              String rs = await routeToEdit(_scaffoldContext,note:widget.note,changeNote:changeNote); //changeNote
-              if(rs == 'success') {
-                await sleep(300);
-                Scaffold.of(_scaffoldContext).showSnackBar(
-                  SnackBar(
-                    content: Text("保存成功"),
-                    backgroundColor:Colors.lightGreen
-                  )
-                );
-              }
-            },
-            child: Text('编辑',style: Theme.of(context).textTheme.subhead.copyWith(color: Colors.white))
-          ),              
-        ],
-      ),
-      body: Builder( // 使用builder是为了暴露出context
-        builder: (context) {
-          _scaffoldContext = context;
-
-          return ListView(
-            children: <Widget>[
-          Container( // note content
-            // constraints:BoxConstraints(minHeight:100),
-            color:Colors.white,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 28, 16, 0), //all(16.0),
-              child: Text(widget.note.content,style:TextStyle(fontSize: 17.0))
-            )
-          ),
-          Container( // note time
-            color: Colors.white,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 0), //all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children:<Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 18, 0, 20), //all(16.0),
-                    child: Text(convertToDetailTime(widget.note),style:TextStyle(fontSize: 14.0,color: Colors.grey))
-                  ),
-              ]),
-            ),
-            // decoration: BoxDecoration( 
-            //   boxShadow: [
-            //     BoxShadow(
-            //       color: Colors.grey[100],
-            //       blurRadius: 5.0, // has the effect of softening the shadow
-            //       spreadRadius: 1.0, // has the effect of extending the shadow
-            //       offset: Offset(
-            //         0.0, // horizontal, move right 10
-            //         5.0, // vertical, move down 10
-            //       ),
-            //     )
-            //   ],
-            //   color: Colors.white,
-            // )
-          ),
-          Container( // gap
-            color:Colors.grey[200],
-            constraints:BoxConstraints(minHeight:2),
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(14, 2, 0, 2), //all(16.0),
-              child: Text('包含相同关键词的笔记',style:TextStyle(fontSize: 14.0,fontWeight:FontWeight.normal,color:Colors.grey)),
-            )
-          ),
-          // Container( // title
-          //   color:Colors.white,
-          //   child: Padding(
-          //     padding: EdgeInsets.fromLTRB(16, 30, 16, 0), //all(16.0),
-          //     child: Text('包含相似关键词的笔记',style:TextStyle(fontSize: 16.0,fontWeight:FontWeight.bold,color: Theme.of(context).accentColor)),
-          //   )
-          // ),
-          Container( // tags
-            color:Colors.white,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(14, 14, 14, 4), //all(16.0),
-              child: _tagsWidget
-            )
-          ),
-          Container( 
-            color:Colors.white,
-            child: Padding(
-              padding: EdgeInsets.all(14.0),
-              child: Column(
-                children: noteList
-              )
-            )
-          ),
-          Container(
-            color:Colors.white,
-            child: Padding(
-              padding: EdgeInsets.all(0.0),
-              child: buildProgressIndicator(_isPerformingRequest)
-            )
-          ),
-          Container( // placeholder
-            color:Colors.white,
-            constraints:BoxConstraints(minHeight:200),
-            child: Text('')
-          ),
-
-        ]
-          ); 
-        }
-      )          
     );
   }
 }

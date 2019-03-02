@@ -7,10 +7,7 @@ import 'dialog.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'http_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-final _noteFont = const TextStyle(fontSize: 16.0);
-
-Widget buildNoteRow(Note note,BuildContext context,int index) {
+Widget buildNoteRow(Note note,BuildContext context,int index,{String from}) {
   void _toggleStar() async {
     String res;
     if(note.starred==true){
@@ -46,23 +43,18 @@ Widget buildNoteRow(Note note,BuildContext context,int index) {
       }
     }
   }
-
-  // void _showSnackBar(String abc){
-  //   Scaffold.of(context).showSnackBar(SnackBar(content: Text("dismissed")));
-  // }
-
-  return new Slidable(
-    delegate: new SlidableDrawerDelegate(),
+  return Slidable(
+    delegate: SlidableDrawerDelegate(),
     actionExtentRatio: 0.25,
-    child: new Container(
+    child: Container(
       color: Colors.white,
-      child: new ListTile(
+      child: ListTile(
         
-        title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:_noteFont),
+        title: Text(note.content,overflow:TextOverflow.ellipsis,maxLines:1,style:TextStyle(fontSize: 16.0)),
         subtitle: Text(convertTime(note),style:TextStyle(fontSize: 14.0,color: Colors.grey)),
-        trailing: IconButton(
-          iconSize: 26,
-          icon: new Icon(
+        trailing: from=='detailPage'?null:IconButton(
+          iconSize: 25,
+          icon: Icon(
             Icons.star ,
             color: note.starred == true ? Colors.yellow : Colors.grey[100],          
           ),
@@ -103,7 +95,9 @@ Widget buildNoteRow(Note note,BuildContext context,int index) {
       ),
     ],
   );
+  
 }
+
 String convertToDetailTime(Note note){
   var format = new DateFormat('yyyy-MM-dd HH:mm a');
   var date = new DateTime.fromMillisecondsSinceEpoch(note.modifyTime);
