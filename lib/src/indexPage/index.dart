@@ -8,6 +8,8 @@ import '../searchPage/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../loginPage.dart';
 import 'drawer.dart';
+import 'dart:async'; // for using future
+
 Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
 }
@@ -30,8 +32,7 @@ class IndexPageState extends State<IndexPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: drawer(context),
-      
-      
+
       body: Builder( // 使用builder是为了暴露出context
         builder: (context) {
           _bodyContext = context;
@@ -68,7 +69,7 @@ class IndexPageState extends State<IndexPage> {
     setState(() {
       token = (prefs.getString(key) ?? ''); // Get value
     });
-    if(token=='') {
+    if(token=='') { // 如果没有登陆
       Future.delayed(Duration.zero, () async {
         String _token = await routeToLoginPage(context);
         setState((){
@@ -78,6 +79,7 @@ class IndexPageState extends State<IndexPage> {
       });
     }
   }
+  
   void _openDrawer(){
     Scaffold.of(_bodyContext).openDrawer();
   }

@@ -22,12 +22,13 @@ var buildMainList = () => ScopedModelDescendant<IndexModel>(
           model.getMoreData(startIdx:0);
         }
         if (index == model.notes.length) {
-          return buildProgressIndicator(model.isPerformingRequest);
+          if(index>9 || index != 0) {
+            return buildProgressIndicator(model.isPerformingRequest);
+          }else{
+            return null;
+          }
         } else {
           return buildNoteRow(model.notes[index],context,index);
-          // if(model.notes.length ==1 && model.notes[0].id == -2){
-          //   return Text('网络连接错误');
-          // }
         }
       }
     )

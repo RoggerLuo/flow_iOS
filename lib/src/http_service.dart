@@ -12,7 +12,6 @@ Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
 }
 
-
 Future<String> unstarNote(note) async {  
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 
@@ -101,7 +100,6 @@ Future<List> getSimilar(String noteId) async {
   return notes;
 }
 
-
 Future<String> modifyNote(note) async {  
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 
@@ -121,8 +119,8 @@ Future<String> modifyNote(note) async {
   } else {
     return 'fail';
   }
-
 }
+
 Future<String> deleteNote(note) async {  
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 
@@ -146,7 +144,6 @@ Future<String> deleteNote(note) async {
 Future<String> createNote(note) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 
-
   var response = await http.post(
     Uri.encodeFull('$baseUrl/note'),
     body: {"content": note.content},
@@ -182,5 +179,29 @@ Future<Map> login(username,password) async {
     return data;
   } else {
     return {'status':'error'};
+  }
+}
+
+Future<String> postRegister(username,password) async {  
+  var response = await http.post(
+    Uri.encodeFull('$baseUrl/auth/register'),
+    body: {"username": username,"password":password},
+    headers: {"content-type": "application/x-www-form-urlencoded"}
+  ).catchError((e){
+    print(e);
+  });
+  if(response == null) return 'error';
+  if(response.statusCode == 200) {
+    var data = json.decode(response.body);
+    if(data['errorCode'] == 1112) {
+      return 'usernameTooLong';
+    }
+
+    if(data['errorCode'] == 113) {
+      return 'duplicated'; 
+    }
+    return data['status'];
+  } else {
+    return 'error';
   }
 }

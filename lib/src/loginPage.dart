@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'http_service.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:async';
+import 'registerPage.dart';
+import 'toast.dart';
+
 Future<String> routeToLoginPage(context) async {
   return Navigator.of(context).push(new MaterialPageRoute( //<Null>
     builder: (BuildContext context) {
-      return new SignupPage();
+
+      return WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
+        child: SignupPage()
+      );
+      // return new SignupPage();
     }
   ));
 }
@@ -17,6 +27,14 @@ class _SignupPageState extends State<SignupPage> {
   String password='';
   String loginStatus='';
   void _tapConfirm() async {
+    if(username=='') {
+      warning("账号不能为空");
+      return;
+    }
+    if(password==''){
+      warning("密码不能为空");
+      return;
+    }
     if(loginStatus=='ing') return
     setState(() {
       loginStatus='ing';
@@ -25,29 +43,12 @@ class _SignupPageState extends State<SignupPage> {
     setState(() {
       loginStatus='';
     });
-
     if(rs['status'] == 'error') {
-      Fluttertoast.showToast(
-        msg: "接口出错",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.grey[200],
-        textColor: Colors.black,
-        fontSize: 16.0
-      );
+      warning("接口出错");
       return;
     }
     if(rs['errorCode'] == 114) {
-      Fluttertoast.showToast(
-        msg: "账号或密码错误",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.grey[200],
-        textColor: Colors.black,
-        fontSize: 16.0
-      );
+      warning("账号或密码错误");
       return;
     }
     String token = rs['results'];
@@ -55,37 +56,39 @@ class _SignupPageState extends State<SignupPage> {
   }
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
         resizeToAvoidBottomPadding: false,
-        body: ListView(
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.fromLTRB(16.0, 80.0, 0.0, 0.0),
-                      child: Text(
-                        '登录',
-                        style: TextStyle(
-                          fontSize: 60.0, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(118.0, 45.0, 0.0, 0.0),
-                      child: Text(
-                        '.',
-                        style: TextStyle(
-                          fontSize: 80.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF0083F0)
+        body: Builder( // 使用builder是为了暴露出context
+          builder: (_context) {
+            return ListView(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Stack(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.fromLTRB(16.0, 80.0, 0.0, 0.0),
+                        child: Text(
+                          '登录',
+                          style: TextStyle(
+                            fontSize: 60.0, fontWeight: FontWeight.bold),
                         ),
                       ),
-                    )
-                  ],
+                      Container(
+                        padding: EdgeInsets.fromLTRB(118.0, 78.0, 0.0, 0.0),
+                        child: Text(
+                          '.',
+                          style: TextStyle(
+                            fontSize: 80.0,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF0083F0)
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Container(
+                Container(
                   padding: EdgeInsets.only(top: 15.0, left: 20.0, right: 20.0),
                   child: Column(
                     children: <Widget>[
@@ -96,9 +99,9 @@ class _SignupPageState extends State<SignupPage> {
                             username = text;
                           });
                         },
-                        style: TextStyle(fontSize: 20,color:Colors.black),
+                        style: TextStyle(fontSize: 18,color:Colors.black),
                         decoration: InputDecoration(
-                          labelText: ' 账号(Email) ',
+                          labelText: ' 账号/Email',
                           labelStyle: TextStyle(
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.bold,
@@ -108,7 +111,7 @@ class _SignupPageState extends State<SignupPage> {
                             borderSide: BorderSide(color: Theme.of(context).primaryColor)
                           )
                         ),
-                        obscureText: true,
+                        // obscureText: true,
                       ),
                       TextField(
                         onChanged: (text) {
@@ -116,7 +119,7 @@ class _SignupPageState extends State<SignupPage> {
                             password = text;
                           });
                         },
-                        style: TextStyle(fontSize: 20,color:Colors.black),
+                        style: TextStyle(fontSize: 18,color:Colors.black),
                         decoration: InputDecoration(
                             labelText: ' 密码 ',
                             labelStyle: TextStyle(
@@ -127,14 +130,14 @@ class _SignupPageState extends State<SignupPage> {
                                 borderSide: BorderSide(color: Theme.of(context).primaryColor))),
                         obscureText: true,
                       ),
-                      SizedBox(height: 30.0),
+                      SizedBox(height: 50.0),
                       InkWell(
                         onTap: _tapConfirm,
                         child: Container(
                           height: 40.0,
                           child: Material(
                             borderRadius: BorderRadius.circular(20.0),
-                            shadowColor: Colors.greenAccent,
+                            shadowColor: Colors.grey,
                             color: loginStatus=='ing'?Colors.blueGrey:Theme.of(context).primaryColor,
                             elevation: 7.0,
                             child: GestureDetector(
@@ -151,12 +154,40 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           )
                         ),
-                      ),                      
+                      ),   
+                      SizedBox(height: 25.0),
+                      InkWell(
+                        onTap: () async {
+                          var rs = await routeToRegisterPage(_context);
+                          if(rs=='ok') {
+                            await sleep(400); // 等编辑框完全退出屏幕
+
+                            Scaffold.of(_context).showSnackBar(
+                              SnackBar(
+                                content: Text("注册成功"),
+                                backgroundColor:Colors.lightGreen
+                              )
+                            );
+
+                          }
+                        },
+                        child: Text(
+                          '没有账号？注册一个',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.grey,
+                            decoration: TextDecoration.underline,
+                            decorationStyle: TextDecorationStyle.solid
+                          ),
+                        ),
+                      ),
                       SizedBox(height: 40.0),
                     ],
                   )
-              ),
-            ]
+                ),
+              ]
+            );
+          }
         )
      );
   }
