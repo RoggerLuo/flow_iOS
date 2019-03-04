@@ -7,7 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 final String baseUrl = "http://rorrc.3322.org:32818/v1";
 // final String baseUrl = "http://0.0.0.0:8999/v1";
 
-int pageSize = 10;
+int pageSize = 20;
+
 Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
 }
@@ -52,12 +53,12 @@ Future<String> starNote(note) async {
   }
 }
 
-Future<List> getNotes(int start) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+Future<List> getNotes(int start,{bool isStar,bool isReverse}) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance(); 
   String token = (prefs.getString('token') ?? ''); 
   if(token=='') return [];
   var response = await http.get(
-    Uri.encodeFull('$baseUrl/note?startIndex=${start.toString()}&pageSize=${pageSize.toString()}'),
+    Uri.encodeFull('$baseUrl/note?startIndex=${start.toString()}&pageSize=${pageSize.toString()}&star=$isStar&reverse=$isReverse'),
     headers: {
       "content-type": "application/x-www-form-urlencoded",
       "token":token

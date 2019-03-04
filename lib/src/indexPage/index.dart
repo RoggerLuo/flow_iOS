@@ -30,6 +30,14 @@ class IndexPageState extends State<IndexPage> {
 
   @override
   Widget build(BuildContext context) {
+    String title = 'Flow';
+    if(ScopedModel.of<IndexModel>(context, rebuildOnChange: true).isReverse){
+      title = '时间倒序';
+    }
+    if(ScopedModel.of<IndexModel>(context, rebuildOnChange: true).isStar){
+      title = '星标笔记';
+    }
+
     return Scaffold(
       drawer: drawer(context),
 
@@ -54,7 +62,7 @@ class IndexPageState extends State<IndexPage> {
 
       appBar: AppBar(
         centerTitle: true,
-        title: new Text('Flow'),
+        title: Text(title),
         leading : IconButton(icon: Icon(Icons.list), onPressed: _openDrawer),
         actions: <Widget>[
           IconButton(icon: Icon(Icons.search), onPressed:()=>routeToSearch(_bodyContext)),
