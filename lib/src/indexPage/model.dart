@@ -18,7 +18,8 @@ class IndexModel extends Model {
   //username 还没写完
   String _username;
   String get username => username;
-
+  List _keywords = [];
+  List get keywords => _keywords;
   void changeUsername(){
 
   }
@@ -58,6 +59,10 @@ class IndexModel extends Model {
       notifyListeners();
       print('onScrollBottom...');
     }
+  }
+  void fetchKeywords() async {
+    _keywords = await getKeywords();
+    notifyListeners();
   }
   void getMoreData({int startIdx}) async {
     if (!_isPerformingRequest) {

@@ -90,13 +90,16 @@ class EditPageState extends State<EditPage> {
       appBar: AppBar(
         title: const Text('编辑'),
         
-        leading : Row(
-          children: <Widget>[
-            Icon(Icons.arrow_back_ios),
-            // const FlutterLogo(),
-            Text('完成'),
-            // const Icon(Icons.sentiment_very_satisfied),
-          ],
+        leading : InkWell(
+          onTap: _goBack,
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.arrow_back_ios),
+              // const FlutterLogo(),
+              Text('完成',style: TextStyle(fontSize: 16)),
+              // const Icon(Icons.sentiment_very_satisfied),
+            ],
+          ),
         ),
 
         // IconButton(

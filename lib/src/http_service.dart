@@ -53,6 +53,34 @@ Future<String> starNote(note) async {
   }
 }
 
+Future<List> getKeywords() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance(); 
+  String token = (prefs.getString('token') ?? ''); 
+  if(token=='') return [];
+  var response = await http.get(
+    Uri.encodeFull('$baseUrl/keywords'),
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      "token":token
+    }
+  ).catchError((e){
+    print(e);
+  });
+  if(response == null) {
+    List<Note> empty= [];
+    return empty;
+  }
+  if(response.statusCode==200) {
+    Map _jsonData = json.decode(response.body);
+    if(_jsonData['status']=='ok') {
+      List data = _jsonData['results'];
+      return data;
+    }
+    return [];
+  }else{
+    return [];
+  }
+}
 Future<List> getNotes(int start,{bool isStar,bool isReverse}) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); 
   String token = (prefs.getString('token') ?? ''); 
