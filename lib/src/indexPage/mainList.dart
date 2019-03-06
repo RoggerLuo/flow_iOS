@@ -5,7 +5,7 @@ import 'model.dart';
 import '../buildProgressIndicator.dart';
 import 'package:flutter_tags/selectable_tags.dart';
 
-Widget getSelectableTags(List tagList){
+Widget getSelectableTags(List tagList,context){
   if(tagList.length==0) return Text('');
 
   var data = tagList.map((el)=>Tag(
@@ -20,14 +20,22 @@ Widget getSelectableTags(List tagList){
   // )).toList();
 
   return SelectableTags(
-    borderSide: BorderSide(width: 1.0, color: Colors.grey[300]),
+    fontSize: 15,
+    
+    borderSide: BorderSide(width: 0.0, color: Colors.white), //grey[300]
     // backgroundContainer: Colors.grey[50],
     tags: data,
-    columns: 3, // default 4
+    columns: 4, // default 4
     symmetry: true, // default false
-    borderRadius: 4,
+    borderRadius: 10,
+    alignment:MainAxisAlignment.start,
     boxShadow:[BoxShadow(color: Colors.white)],
+    margin: EdgeInsets.all(3) ,//EdgeInsets.fromLTRB(3, 4, 3, 4),
+    offset:30,
+    textOverflow:TextOverflow.fade,
     onPressed: (tag){
+      ScopedModel.of<IndexModel>(context, rebuildOnChange: true).tapTag(tag.title);
+
       // setState(() {
       //   _filtered_notes = [];
       // });
@@ -76,25 +84,40 @@ var buildMainList = () => ScopedModelDescendant<IndexModel>(
     child: ListView.separated(
       separatorBuilder: (BuildContext context, int index) => Divider(height: 0.0),
       padding: const EdgeInsets.all(0),
-      itemCount: model.notes.length + 1,
+      itemCount: model.notes.length + 2, // 一个是selectable tags, 一个是indicator
       itemBuilder: (context, index) {
         if(model.notes.length == 0){ // init data
           model.getMoreData(startIdx:0);
           model.fetchKeywords();
         }
-        print(index);
         if(index == 0){
-          return getSelectableTags(model.keywords);
+          return getSelectableTags(model.keywords,context);
         }
-        if (index == model.notes.length) {
-          if(index>9 || index != 0) {
-            return buildProgressIndicator(model.isPerformingRequest);
-          }else{
-            return null;
-          }
-        } else {
-          return buildNoteRow(model.notes[index],context,index);
+        int noteIndex = index - 1; // 因为第一位被占了 但是+1了
+        int lastIndexInTotal = model.notes.length + 2 - 1;
+        if(index != lastIndexInTotal) {
+          return buildNoteRow(model.notes[noteIndex],context,index);
         }
+        if(index == lastIndexInTotal) {
+          int noteCount = noteIndex+1;
+          if(noteCount<20) return null; // 小于一次分页的量也别显示，不用分页了就
+          return buildProgressIndicator(model.isPerformingRequest);          
+        }
+        // if (index == ((model.notes.length-1)+2) ) {
+        //   if(index == 0 ) return null;
+        //   if(index > ((20-1) +2 ) ) {
+        //     return buildProgressIndicator(model.isPerformingRequest);          
+        //   }else{
+        //     return null;
+        //   }
+        // } else {
+        //   print(index-1);
+        //   if(model.notes.length!=0){
+        //     return buildNoteRow(model.notes[index-1],context,index);
+        //   }else{
+        //     return null;
+        //   }
+        // }
       }
     )
   )

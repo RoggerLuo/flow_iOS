@@ -5,7 +5,7 @@ import 'note.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final String baseUrl = "http://rorrc.3322.org:32818/v1";
-// final String baseUrl = "http://0.0.0.0:8999/v1";
+// final String baseUrl = "http://192.168.1.3:8999/v1";
 
 int pageSize = 20;
 
@@ -58,7 +58,7 @@ Future<List> getKeywords() async {
   String token = (prefs.getString('token') ?? ''); 
   if(token=='') return [];
   var response = await http.get(
-    Uri.encodeFull('$baseUrl/keywords'),
+    Uri.encodeFull('$baseUrl/keywords?limit=12'),
     headers: {
       "content-type": "application/x-www-form-urlencoded",
       "token":token
@@ -110,7 +110,35 @@ Future<List> getNotes(int start,{bool isStar,bool isReverse}) async {
     return [];
   }
 }
-
+Future<List> getNotesByKeywords(int start,keywords) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance(); 
+  String token = (prefs.getString('token') ?? ''); 
+  if(token=='') return [];
+  var response = await http.get(
+    Uri.encodeFull('$baseUrl/search/keywords?keywords=$keywords&startIndex=${start.toString()}&pageSize=${pageSize.toString()}'),
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      "token":token
+    }
+  ).catchError((e){
+    print(e);
+  });
+  if(response == null) {
+    List<Note> empty= [];
+    return empty;
+  }
+  if(response.statusCode==200) {
+    Map _jsonData = json.decode(response.body);
+    if(_jsonData['status']=='ok') {
+      List data = _jsonData['results'];
+      List<Note> notes = data.map((note)=> Note.fromJson(note)).toList(); 
+      return notes;
+    }
+    return [];
+  }else{
+    return [];
+  }
+}
 Future<List> getSimilar(String noteId) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 

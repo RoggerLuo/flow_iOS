@@ -18,8 +18,20 @@ class IndexModel extends Model {
   //username 还没写完
   String _username;
   String get username => username;
+  
   List _keywords = [];
   List get keywords => _keywords;
+  List _selected_tags = [];
+  List get selected_tags => _selected_tags;
+
+  void tapTag(tagText){
+    if(_selected_tags.indexOf(tagText) == -1){
+      _selected_tags.add(tagText);
+    }else{
+      _selected_tags.remove(tagText);
+    }
+    refreshData();
+  }
   void changeUsername(){
 
   }
@@ -51,7 +63,12 @@ class IndexModel extends Model {
       _notes = [];
       _isPerformingRequest = true;
       notifyListeners();
-      List<Note> notes = await getNotes(0,isStar:_isStar,isReverse:_isReverse);
+      List<Note> notes = [];
+      if(_selected_tags.length>0) {
+        notes = await getNotesByKeywords(0,_selected_tags.join(','));
+      }else{
+        notes = await getNotes(0,isStar:_isStar,isReverse:_isReverse);
+      }
       _notes = notes;
       notifyListeners();
       // await sleep(2000); // 故意停止2秒吗 脑子秀逗了
@@ -68,7 +85,12 @@ class IndexModel extends Model {
     if (!_isPerformingRequest) {
       _isPerformingRequest = true;
       notifyListeners();
-      List<Note> notes = await getNotes(startIdx,isStar:_isStar,isReverse:_isReverse);
+      List<Note> notes = [];
+      if(_selected_tags.length>0) {
+        notes = await getNotesByKeywords(startIdx,_selected_tags.join(','));
+      }else{
+        notes = await getNotes(startIdx,isStar:_isStar,isReverse:_isReverse);
+      }
       _notes.addAll(notes);
       _isPerformingRequest = false;
       notifyListeners();
