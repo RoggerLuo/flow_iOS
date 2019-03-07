@@ -7,7 +7,7 @@ import 'dialog.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'http_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-Widget buildNoteRow(Note note,BuildContext context,int index,{String from}) {
+Widget buildNoteRow(Note note,BuildContext context,int index,{String from,removeNote}) {
   void _toggleStar() async {
     String res;
     if(note.starred==true){
@@ -25,7 +25,11 @@ Widget buildNoteRow(Note note,BuildContext context,int index,{String from}) {
     if(rs == ConfirmAction.ACCEPT) {
       String res = await deleteNote(note);
       if(res == 'ok') {
-        ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
+        if(from=='detailPage') {
+          await removeNote(index); // 传入参数
+        }else{
+          ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
+        }
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text("删除成功"),
           backgroundColor:Colors.lightGreen

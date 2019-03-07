@@ -45,6 +45,9 @@ class DetailPageState extends State<DetailPage> {
       });
     }
   }
+  void _removeNote(int index){
+    _filtered_notes.removeAt(index);
+  }
   @override
   initState(){
     super.initState();
@@ -54,13 +57,11 @@ class DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> noteList = [];
-
     for (var x = 0; x < _filtered_notes.length; x++) {
       noteList.add(Divider(height: 0.0));
-      noteList.add(buildNoteRow(_filtered_notes[x],context,x,from:'detailPage'));
+      noteList.add(buildNoteRow(_filtered_notes[x],context,x,removeNote:_removeNote,from:'detailPage'));
     }
     noteList.add(Divider(height: 0.0));
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
@@ -159,6 +160,7 @@ class DetailPageState extends State<DetailPage> {
   void _pressEditButton() async {
     String rs = await routeToEdit(_scaffoldContext,note:widget.note,changeNote:changeNote); //changeNote
     if(rs == 'ok') {
+      getSimilarList(widget.note.id);
       await sleep(400);
       Scaffold.of(_scaffoldContext).showSnackBar(
         SnackBar(
