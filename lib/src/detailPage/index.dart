@@ -46,7 +46,9 @@ class DetailPageState extends State<DetailPage> {
     }
   }
   void _removeNote(int index){
-    _filtered_notes.removeAt(index);
+    setState(() {
+      _filtered_notes.removeAt(index);    
+    });
   }
   @override
   initState(){
@@ -59,7 +61,7 @@ class DetailPageState extends State<DetailPage> {
     List<Widget> noteList = [];
     for (var x = 0; x < _filtered_notes.length; x++) {
       noteList.add(Divider(height: 0.0));
-      noteList.add(buildNoteRow(_filtered_notes[x],context,x,removeNote:_removeNote,from:'detailPage'));
+      noteList.add(buildNoteRow(_filtered_notes[x],_scaffoldContext,x,removeNote:_removeNote,from:'detailPage'));
     }
     noteList.add(Divider(height: 0.0));
     return Scaffold(
@@ -160,7 +162,7 @@ class DetailPageState extends State<DetailPage> {
   void _pressEditButton() async {
     String rs = await routeToEdit(_scaffoldContext,note:widget.note,changeNote:changeNote); //changeNote
     if(rs == 'ok') {
-      getSimilarList(widget.note.id);
+      // getSimilarList(widget.note.id);
       await sleep(400);
       Scaffold.of(_scaffoldContext).showSnackBar(
         SnackBar(
@@ -178,7 +180,7 @@ class DetailPageState extends State<DetailPage> {
       title: el, 
       active: false
     )).toList();
-    _tagsWidget = getSelectableTags(tagList);
+    _tagsWidget = getSelectableTags(tagList);    
   }
   void getSimilarList(String noteId) async {    
     setState(() {

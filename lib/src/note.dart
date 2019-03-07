@@ -26,7 +26,7 @@ Widget buildNoteRow(Note note,BuildContext context,int index,{String from,remove
       String res = await deleteNote(note);
       if(res == 'ok') {
         if(from=='detailPage') {
-          await removeNote(index); // 传入参数
+          removeNote(index); // 传入参数
         }else{
           ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
         }
@@ -95,7 +95,7 @@ Widget buildNoteRow(Note note,BuildContext context,int index,{String from,remove
       //   onTap: () => _showSnackBar('Share'),
       // ),
     ],
-    secondaryActions: <Widget>[
+    secondaryActions: from=='detailPage'?<Widget>[]:<Widget>[
       // new IconSlideAction(
       //   caption: 'More',
       //   color: Colors.black45,
