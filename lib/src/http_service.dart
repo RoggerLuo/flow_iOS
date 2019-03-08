@@ -16,8 +16,8 @@ Future sleep(int _milliseconds) {
 Future<String> verifyAuth() async {  
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 
-  var response = await http.delete(
-    Uri.encodeFull('$baseUrl/verify'), 
+  var response = await http.get(
+    Uri.encodeFull('$baseUrl/auth/verify'), 
     headers: {
       "content-type": "application/x-www-form-urlencoded",
       "token":token
@@ -27,9 +27,9 @@ Future<String> verifyAuth() async {
   });
   if(response.statusCode==200) {
     Map data = json.decode(response.body);
-    return data['results'];
+    return data['status'];
   } else {
-    return 'fail';
+    return 'error';
   }
 }
 

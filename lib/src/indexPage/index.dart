@@ -89,7 +89,7 @@ class IndexPageState extends State<IndexPage> {
       return;
     }else { // 正常验证
       String rs = await verifyAuth();
-      if(rs == 'fail') {
+      if(rs == 'error') {
         Future.delayed(Duration.zero, () async {
         String _token = await routeToLoginPage(context);
         setState((){
