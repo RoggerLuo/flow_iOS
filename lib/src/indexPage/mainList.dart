@@ -13,15 +13,8 @@ Widget getSelectableTags(List tagList,context){
     active: false
   )).toList();
 
-  // if(tagList.length==0) return Text('');
-  // List<Tag> _tags = tagList.map((el)=>Tag(
-  //   title: el, 
-  //   active: false
-  // )).toList();
-
   return SelectableTags(
     fontSize: 15,
-    
     borderSide: BorderSide(width: 0.0, color: Colors.white), //grey[300]
     // backgroundContainer: Colors.grey[50],
     tags: data,

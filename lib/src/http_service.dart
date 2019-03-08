@@ -33,7 +33,6 @@ Future<String> verifyAuth() async {
   }
 }
 
-
 Future<String> unstarNote(note) async {  
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 
@@ -79,7 +78,7 @@ Future<List> getKeywords() async {
   String token = (prefs.getString('token') ?? ''); 
   if(token=='') return [];
   var response = await http.get(
-    Uri.encodeFull('$baseUrl/keywords?limit=12'),
+    Uri.encodeFull('$baseUrl/keywords?limit=16'),
     headers: {
       "content-type": "application/x-www-form-urlencoded",
       "token":token
