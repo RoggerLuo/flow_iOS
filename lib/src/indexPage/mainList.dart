@@ -6,7 +6,7 @@ import '../buildProgressIndicator.dart';
 import 'package:flutter_tags/selectable_tags.dart';
 
 Widget getSelectableTags(List tagList,context){
-  if(tagList.length==0) return Text('');
+  if(tagList.length==0) return buildProgressIndicator(true);//Text('');
 
   var data = tagList.map((el)=>Tag(
     title: el, 
@@ -66,8 +66,8 @@ var buildMainList = () => ScopedModelDescendant<IndexModel>(
           return buildNoteRow(model.notes[noteIndex],context,noteIndex);
         }
         if(index == lastIndexInTotal) {
-          int noteCount = noteIndex+1;
-          if(noteCount<20) return null; // 小于一次分页的量也别显示，不用分页了就
+          //int noteCount = noteIndex+1;
+          //if(noteCount<20) return null; // 小于一次分页的量也别显示，不用分页了就
           return buildProgressIndicator(model.isPerformingRequest);          
         }
       }
