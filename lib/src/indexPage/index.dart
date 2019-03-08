@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../loginPage.dart';
 import 'drawer.dart';
 import 'dart:async'; // for using future
-
+import '../http_service.dart';
 Future sleep(int _milliseconds) {
   return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
 }
@@ -77,6 +77,7 @@ class IndexPageState extends State<IndexPage> {
     setState(() {
       token = (prefs.getString(key) ?? ''); // Get value
     });
+    
     if(token=='') { // 如果没有登陆
       Future.delayed(Duration.zero, () async {
         String _token = await routeToLoginPage(context);
@@ -85,6 +86,18 @@ class IndexPageState extends State<IndexPage> {
         });
         prefs.setString(key, token); // Save Value
       });
+      return;
+    }else { // 正常验证
+      String rs = await verifyAuth();
+      if(rs == 'fail') {
+        Future.delayed(Duration.zero, () async {
+        String _token = await routeToLoginPage(context);
+        setState((){
+          token = _token;
+        });
+        prefs.setString(key, token); // Save Value
+      });
+      }
     }
   }
   
