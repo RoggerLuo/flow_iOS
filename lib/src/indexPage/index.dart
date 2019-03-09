@@ -4,7 +4,7 @@ import 'model.dart';
 import 'mainList.dart';
 import '../editPage/index.dart';
 import '../note.dart';
-import '../searchPage/index.dart';
+import '../searchPage2/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../loginPage.dart';
 import 'drawer.dart';
