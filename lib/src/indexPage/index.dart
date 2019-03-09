@@ -4,7 +4,7 @@ import 'model.dart';
 import 'mainList.dart';
 import '../editPage/index.dart';
 import '../note.dart';
-import '../searchPage2/index.dart';
+import '../searchPage/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../loginPage.dart';
 import 'drawer.dart';
@@ -65,7 +65,10 @@ class IndexPageState extends State<IndexPage> {
         title: Text(title),
         leading : IconButton(icon: Icon(Icons.list), onPressed: _openDrawer),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.search), onPressed:()=>routeToSearch(_bodyContext)),
+          IconButton(icon: Icon(Icons.search), onPressed:() async {
+            await routeToSearch(_bodyContext);
+            _refreshNotesButton();
+          }),
           IconButton(icon: Icon(Icons.refresh), onPressed: _refreshNotesButton)
         ],
       ),

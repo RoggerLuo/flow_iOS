@@ -159,6 +159,23 @@ Future<List> getNotesByKeywords(int start,keywords) async {
     return [];
   }
 }
+Future<List> searchReq(String keywords) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
+  String token = (prefs.getString('token') ?? ''); 
+  var response = await http.get(
+    Uri.encodeFull('$baseUrl/search?keywords=$keywords&pageSize=20'),
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      "token":token
+    }
+  ).catchError((e){
+    print(e);
+  });
+  Map data = json.decode(response.body);
+  List results = data['results']['data'];
+  List<Note> notes = results.map((note)=> Note.fromJson(note)).toList(); 
+  return notes;
+}
 Future<List> getSimilar(String noteId) async {
   SharedPreferences prefs = await SharedPreferences.getInstance(); // Get shared preference instance
   String token = (prefs.getString('token') ?? ''); 

@@ -25,7 +25,7 @@ Widget buildNoteRow(Note note,BuildContext context,int index,{String from,remove
     if(rs == ConfirmAction.ACCEPT) {
       String res = await deleteNote(note);
       if(res == 'ok') {
-        if(from=='detailPage') {
+        if(from=='detailPage'||from=='searchPage') {
           removeNote(index); // 传入参数
         }else{
           ScopedModel.of<IndexModel>(context, rebuildOnChange: true).deleteNote(index);
