@@ -3,6 +3,11 @@ import '../note.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import '../http_service.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../buildProgressIndicator.dart';
+import 'dart:async';
+Future sleep(int _milliseconds) {
+  return new Future.delayed(Duration(milliseconds: _milliseconds), () => "1");
+}
 
 Future<String> routeToNew(context,{Note note,changeNote}) async {
   return Navigator.of(context).push(MaterialPageRoute( //<Null>
@@ -33,17 +38,26 @@ class EditPage extends StatefulWidget {
 }
 class EditPageState extends State<EditPage> {  
   FocusNode _nodeText1 = FocusNode();
+  bool spin = false;
   void focus(){
     FocusScope.of(context).requestFocus(_nodeText1);
   }
   final myController = TextEditingController();
   Note _note;
   bool saved = true;
+
   void _goBack() async {
+    
     if(saved){
       Navigator.of(context).pop('no changes happen');
       return ;
     }
+    if(spin) return;
+    setState(() {
+      spin = true;
+      
+    });
+    //await sleep(3000);
     if(widget.note.id=='_new') { //判断是新建还是编辑
       if(_note.content==''){ // 新建的情况下 如果没有编辑就退出
         Navigator.of(context).pop('no changes happen');
@@ -71,7 +85,9 @@ class EditPageState extends State<EditPage> {
         Navigator.of(context).pop('ok');
       }
     }
-        
+    setState(() {
+      spin = false;    
+    }); 
   }
   @override
   void dispose() {
@@ -125,8 +141,11 @@ class EditPageState extends State<EditPage> {
       ),
       body: Builder( // 使用builder是为了暴露出context
         builder: (context) { 
+          return Stack(
+            children: <Widget>[
+              spin?buildProgressIndicator(true):Text(''),
           // _scaffoldContext = context;
-          return FormKeyboardActions(
+          FormKeyboardActions(
             keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
             keyboardBarColor: Colors.transparent, //Colors.grey[200],//
             nextFocus: false,
@@ -172,7 +191,12 @@ class EditPageState extends State<EditPage> {
               ],
             ),
           ),
-        );
+        )
+          
+          
+          ]
+          );
+          
         // TextField(
         //   keyboardType: TextInputType.multiline,
         //   maxLines: 16,

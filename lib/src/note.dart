@@ -95,7 +95,7 @@ Widget buildNoteRow(Note note,BuildContext context,int index,{String from,remove
       //   onTap: () => _showSnackBar('Share'),
       // ),
     ],
-    secondaryActions: from=='detailPage'?<Widget>[]:<Widget>[
+    secondaryActions: <Widget>[ //from=='detailPage'?<Widget>[]:
       // new IconSlideAction(
       //   caption: 'More',
       //   color: Colors.black45,

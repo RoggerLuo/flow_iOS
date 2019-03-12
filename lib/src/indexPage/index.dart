@@ -51,7 +51,6 @@ class IndexPageState extends State<IndexPage> {
           );
         }
       ),
-      
       floatingActionButton: Theme(
         data: Theme.of(context).copyWith(accentColor: Theme.of(context).primaryColor), //Color(0xff0083F0)
         child: new FloatingActionButton(
